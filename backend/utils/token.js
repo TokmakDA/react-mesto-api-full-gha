@@ -1,11 +1,13 @@
 const jwt = require('jsonwebtoken');
 
-const SECKRET_KEY = 'my-secret-key';
-
 function generateToken(payload) {
-  const token = jwt.sign(payload, SECKRET_KEY, {
-    expiresIn: '7d',
-  });
+  const token = jwt.sign(
+    payload,
+    NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+    {
+      expiresIn: '7d',
+    },
+  );
   return token;
 }
 

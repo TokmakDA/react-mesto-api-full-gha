@@ -1,5 +1,5 @@
+require('dotenv').config();
 const express = require('express');
-
 const process = require('process');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
@@ -29,4 +29,5 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`Start server, port:${PORT}`);
+  console.log(process.env.NODE_ENV);
 });

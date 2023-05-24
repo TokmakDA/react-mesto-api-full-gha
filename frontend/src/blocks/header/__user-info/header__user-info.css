@@ -1,0 +1,21 @@
+.header__user-info {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: right;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  max-width: 282px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+
+@media screen and (max-width: 720px) {
+  .header__user-info {
+    text-align: center;
+  }
+}

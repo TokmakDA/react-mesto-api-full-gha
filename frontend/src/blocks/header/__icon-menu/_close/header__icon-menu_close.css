@@ -1,0 +1,7 @@
+.header__icon-menu_close {
+  background: url(../../../../images/close-menu-icon.svg);
+  background-size: contain;
+  background-position: center;
+  width: 20px;
+  height: 20px;
+}

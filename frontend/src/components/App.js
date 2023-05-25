@@ -194,7 +194,7 @@ function App() {
         setLoggedIn(false);
         console.log('cbTokenCheck => try => !jwt ');
 
-        throw new Error('Ошибка, нет куки. Требуется авторизация');
+        throw new Error('Требуется авторизация');
       }
       const initialsData = await api.getInitialsData();
       if (initialsData) {
@@ -205,7 +205,8 @@ function App() {
         setLoggedIn(true);
         navigate('/');
       }
-    } catch {
+    } catch(err) {
+      console.log(err.message)
       setLoggedIn(false);
     } finally {
       setLoading(false);

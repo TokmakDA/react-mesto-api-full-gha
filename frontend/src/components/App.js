@@ -47,19 +47,19 @@ function App() {
 
   const navigate = useNavigate();
 
-  // Получаем первичные данные
-  useEffect(() => {
-    console.log('useEffect => getInitialsData');
+  // // Получаем первичные данные
+  // useEffect(() => {
+  //   console.log('useEffect => getInitialsData');
 
-    api
-      .getInitialsData()
-      .then(([userInfo, initialCards]) => {
-        console.log('getInitialsData => ', userInfo, initialCards);
-        setCurrentUser(userInfo.data);
-        setCurrentCards(initialCards.data);
-      })
-      .catch((err) => console.log('getInitialsData => err', err));
-  }, []);
+  //   api
+  //     .getInitialsData()
+  //     .then(([userInfo, initialCards]) => {
+  //       console.log('getInitialsData => ', userInfo, initialCards);
+  //       setCurrentUser(userInfo.data);
+  //       setCurrentCards(initialCards.data);
+  //     })
+  //     .catch((err) => console.log('getInitialsData => err', err));
+  // }, []);
 
   // Обработчики открытия попапов
   function handleEditAvatarClick() {
@@ -189,16 +189,19 @@ function App() {
 
     try {
       setLoading(true);
-      const jwt = Cookies.get();
+      const jwt = Cookies.get('jwt');
       if (!jwt) {
         setLoggedIn(false);
-            console.log('cbTokenCheck => try => !jwt ');
+        console.log('cbTokenCheck => try => !jwt ');
 
         throw new Error('Ошибка, нет куки. Требуется авторизация');
       }
-      const userInfo = await api.getUserInfo();
-      if (userInfo) {
-        // setCurrentUser(userInfo.data);
+      const initialsData = await api.getInitialsData();
+      if (initialsData) {
+        // console.log(initialsData);
+        // console.log('getInitialsData => ', initialsData[0], initialsData[1]);
+        setCurrentUser(initialsData[0].data);
+        setCurrentCards(initialsData[1].data);
         setLoggedIn(true);
         navigate('/');
       }
@@ -207,7 +210,7 @@ function App() {
     } finally {
       setLoading(false);
     }
-  }, navigate);
+  }, [navigate]);
 
   useEffect(() => {
     cbTokenCheck();
@@ -221,10 +224,12 @@ function App() {
     api
       .authorize({ email, password })
       .then((res) => {
-        console.log('cbLogin => auth.authorize => res.data', res.data);
+        // console.log('cbLogin => auth.authorize => res.data', res.data);
         setCurrentUser(res.data);
-        console.log(Cookies.get());
-
+        // console.log('cbLogin => auth.authorize =>  res.cookie', res.cookie);
+        // console.log('cbLogin => auth.authorize => Cookies.get()', Cookies.get());
+        // console.log('cbLogin => auth.authorize => Cookies.get(jwt)', Cookies.get('jwt'));
+        cbTokenCheck();
         // res.token && localStorage.setItem('jwt', res.token);
         navigate('/');
         // setLoggedIn(true);
@@ -274,7 +279,7 @@ function App() {
       .getSignout()
       .then((res) => {
         console.log('cbLogOut => auth.getSignout => res', res);
-        console.log(Cookies.get('jwt'));
+        console.log('cbLogOut => getSignout => Cookies.get(jwt)', Cookies.get('jwt'));
         setLoggedIn(false);
       })
       .catch((err) => {

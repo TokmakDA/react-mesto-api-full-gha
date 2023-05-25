@@ -145,7 +145,7 @@ function App() {
     (!isLiked ? api.addLikeCard(card._id) : api.deleteLikeCard(card._id))
       .then((newCard) => {
         setCurrentCards((state) =>
-          state.map((c) => (c._id === card._id ? newCard : c))
+          state.map((c) => (c._id === card._id ? newCard : c)),
         );
       })
       .catch((err) => console.log(err));
@@ -165,36 +165,40 @@ function App() {
       .finally(() => setLoading(false));
   }
 
-  const cbTokenCheck = useCallback(async () => {
-    try {
-      setLoading(true);
-      const jwt = localStorage.getItem('jwt');
-      if (!jwt) {
-        throw new Error('Ошибка, нет токена');
-      }
-      const userAccaunt = await auth.getContent(jwt);
-      if (userAccaunt) {
-        setAccount(userAccaunt.data);
-        setLoggedIn(true);
-        navigate('/');
-      }
-    } catch {
-      setLoggedIn(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [navigate]);
+  // const cbTokenCheck = useCallback(async () => {
+  //   try {
+  //     setLoading(true);
+  //     const jwt = localStorage.getItem('jwt');
+  //     if (!jwt) {
+  //       throw new Error('Ошибка, нет токена');
+  //     }
+  //     const userAccaunt = await auth.getContent(jwt);
+  //     if (userAccaunt) {
+  //       setAccount(userAccaunt.data);
+  //       setLoggedIn(true);
+  //       navigate('/');
+  //     }
+  //   } catch {
+  //     setLoggedIn(false);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }, [navigate]);
 
-  useEffect(() => {
-    cbTokenCheck();
-  }, [cbTokenCheck]);
+  // useEffect(() => {
+  //   cbTokenCheck();
+  // }, [cbTokenCheck]);
 
+  // Авторизация
   const cbLogin = ({ email, password }) => {
     setLoading(true);
     auth
       .authorize({ email, password })
       .then((res) => {
-        res.token && localStorage.setItem('jwt', res.token);
+        console.log('cbLogin => auth.authorize => res.data', res.data);
+
+        setAccount(res.data);
+        // res.token && localStorage.setItem('jwt', res.token);
         navigate('/');
         setLoggedIn(true);
       })
@@ -208,6 +212,7 @@ function App() {
       });
   };
 
+  // Регистрация
   const cbRegister = ({ email, password }) => {
     setLoading(true);
     auth

@@ -21,7 +21,10 @@ function Main({
         <div className="profile__avatar">
           <img
             className="profile__avatar-image"
-            src={currentUser?.avatar}
+            src={
+              currentUser?.avatar ??
+              'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'
+            }
             alt="Аватар"
           />
           <button
@@ -31,13 +34,17 @@ function Main({
           ></button>
         </div>
         <div className="profile__info">
-          <h1 className="profile__name">{currentUser?.name}</h1>
+          <h1 className="profile__name">
+            {currentUser?.name ?? 'Жак-Ив Кусто'}
+          </h1>
           <button
             className="profile__edit-button"
             onClick={() => onEditProfile()}
             type="button"
           ></button>
-          <p className="profile__job">{currentUser?.about}</p>
+          <p className="profile__job">
+            {currentUser?.about ?? 'Исследователь'}
+          </p>
         </div>
         <button
           className="profile__add-button"

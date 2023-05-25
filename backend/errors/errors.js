@@ -13,25 +13,25 @@ const returnErrorToUser = (err, req, res, next) => {
 };
 
 function handleError(err, req, res, next) {
-  console.log('handleError => ', err);
+  console.log('handleError => err', err.statusCode, err.name);
 
   if (err instanceof SomeError) {
-    returnErrorToUser(err, req, res);
+    returnErrorToUser(err, req, res, next);
   } else if (err.name === 'CastError') {
     const newErr = new BadRequestError('Incorrect ID');
-    returnErrorToUser(newErr, req, res);
+    returnErrorToUser(newErr, req, res, next);
   } else if (err.name === 'ValidationError') {
     const message = Object.values(err.errors)
       .map((error) => error.message)
       .join('; ');
     const newErr = new BadRequestError(message);
-    returnErrorToUser(newErr, req, res);
+    returnErrorToUser(newErr, req, res, next);
   } else if (err.message === 'Validation failed') {
     // Ошибки перехваченные от celebrate
     next(err);
   } else {
     const newErr = new DefaltError('Swth went wrong');
-    returnErrorToUser(newErr, req, res);
+    returnErrorToUser(newErr, req, res, next);
   }
 }
 

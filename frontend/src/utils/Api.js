@@ -2,14 +2,54 @@ class Api {
   constructor(options) {
     this._baseUrl = options.baseUrl;
     this._headers = options.headers;
+    this._credentials = options.credentials;
   }
 
-  _checkResponse = (res) =>
-    res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
+  _checkResponse = (res) => {
+    // res.ok
+    //   ? res.json()
+    //   : Promise.reject(`Ошибка: ${res.status} , ${res.statusText}`);
+
+    //   if (res.ok) {
+    //     return await res.json();
+    //   } else {
+    //     try {
+    //       const err = await res.json();
+    //       if (err.validation) {
+    //         console.log(err.validation);
+    //         throw new Error(err.validation.body.message ?? err.message);
+    //       } else if (err.message) {
+    //         throw new Error(err.message);
+    //       } else {
+    //         throw new Error(err);
+    //       }
+    //     } catch (e) {
+    //       return Promise.reject(e);
+    //     }
+    //   }
+    // };
+
+    if (res.ok) {
+      return res.json();
+    } else {
+      res.json().then((err) => {
+        if (err.validation) {
+          console.log(err.validation);
+          throw new Error(err.validation.body.message ?? err.message);
+        } else if (err.message) {
+          throw new Error(err.message);
+        } else {
+          throw new Error(err);
+        }
+      });
+    }
+  };
+  //
 
   _makeRequest(url, method, body) {
     const config = {
       method,
+      credentials: this._credentials,
       headers: this._headers,
     };
 
@@ -75,18 +115,41 @@ class Api {
     });
   }
 
+  // Регистрация
+  register = ({ email, password }) => {
+    return this._makeRequest('/signup', 'POST', { email, password });
+  };
+
+  // Авторизация
+  authorize = ({ email, password }) => {
+    return this._makeRequest('/signin', 'POST', { email, password });
+  };
+
+  // Чекаем токен
+  getContent = () => {
+    return this._makeRequest('/users/me', 'GET');
+  };
+
+  // Выход
+  getSignout = () => {
+    return this._makeRequest('/signout', 'GET');
+  };
+
   // закгружаем первичную информацию с сервера
   getInitialsData() {
     return Promise.all([this.getUserInfo(), this.getInitialCards()]);
   }
 }
 
-const api = new Api({
-  baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-59',
+const config = {
+  baseUrl: 'http://localhost:3000',
+  credentials: 'include',
   headers: {
-    authorization: '0fac7cb1-5a97-4e4b-9bc6-bcf4a65057a3',
+    Accept: 'application/json',
     'Content-Type': 'application/json',
   },
-});
+};
+
+const api = new Api(config);
 
 export default api;

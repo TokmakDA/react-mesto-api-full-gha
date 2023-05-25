@@ -1,10 +1,10 @@
 import React from 'react';
 import Popup from './Popup';
 
-const InfoTooltip = ({ isOpen, onClose, isInfoTooltip }) => {
+const InfoTooltip = ({ isOpen, onClose, isInfoTooltip, errMessage }) => {
   const info = {
     ok: 'Вы успешно зарегистрировались!',
-    fail: 'Что-то пошло не так! Попробуйте ещё раз.',
+    fail: errMessage ?? 'Что-то пошло не так! Попробуйте ещё раз.',
   };
 
   return (

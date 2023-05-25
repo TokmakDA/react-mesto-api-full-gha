@@ -4,7 +4,7 @@ import { Link, Route, Routes } from 'react-router-dom';
 import UserBar from './UserBar';
 import { useResize } from '../hooks/useResize';
 
-function Header({ account, logOut, isLoggedIn }) {
+function Header({ logOut, isLoggedIn }) {
   // const location = useLocation();
   const [isUserBarOpen, setUserBarOpen] = useState(false);
 
@@ -20,9 +20,7 @@ function Header({ account, logOut, isLoggedIn }) {
 
   return (
     <>
-      {isLoggedIn && isUserBarOpen && !isScreen && (
-        <UserBar logOut={logOut} account={account} />
-      )}
+      {isLoggedIn && isUserBarOpen && !isScreen && <UserBar logOut={logOut} />}
       <header className="header">
         <img className="header__logo" src={logo} alt="Логотип" />
         <nav className="header__nav-bar">
@@ -39,7 +37,7 @@ function Header({ account, logOut, isLoggedIn }) {
                     onClick={handleClickIcon}
                   />
                 ) : (
-                  <UserBar logOut={logOut} account={account} />
+                  <UserBar logOut={logOut} />
                 )
               }
             />

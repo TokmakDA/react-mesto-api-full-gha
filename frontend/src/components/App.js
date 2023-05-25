@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 import '../index.css';
 import Header from './Header';
@@ -16,7 +17,6 @@ import CardDeletePopup from './DeleteCardPopup';
 import ProtectedRoute from './ProtectedRoute';
 import Register from './Register';
 import Login from './Login';
-import auth from '../utils/Auth';
 import InfoTooltip from './InfoTooltip';
 import Loading from './Loading';
 
@@ -31,7 +31,6 @@ function App() {
 
   // Стейт результат обработки api Auth: OK=true, error=false
   const [isInfoTooltip, setInfoTooltip] = useState(false);
-
   // Стейт массива карточек
   const [currentCards, setCurrentCards] = useState([]);
   // Стейт карточки для удаления
@@ -40,24 +39,26 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   // Стейт ожидания загрузки
   const [isLoading, setLoading] = useState(false);
+  // Стейт Сообщения об ошибке
+  const [errMessage, setErrMessage] = useState(null);
 
   // Стейт авторизации на сайте
   const [isLoggedIn, setLoggedIn] = useState(false);
-
-  // Стейт информация об аккаунте
-  const [account, setAccount] = useState('');
 
   const navigate = useNavigate();
 
   // Получаем первичные данные
   useEffect(() => {
+    console.log('useEffect => getInitialsData');
+
     api
       .getInitialsData()
       .then(([userInfo, initialCards]) => {
-        setCurrentUser(userInfo);
-        setCurrentCards(initialCards);
+        console.log('getInitialsData => ', userInfo, initialCards);
+        setCurrentUser(userInfo.data);
+        setCurrentCards(initialCards.data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log('getInitialsData => err', err));
   }, []);
 
   // Обработчики открытия попапов
@@ -94,15 +95,19 @@ function App() {
     closseImagepopup();
     setCardDeletePopupOpen(false);
     setInfoTooltipOpen(false);
+    setTimeout(() => setErrMessage(null), 1000);
   }, []);
 
   // сохраняем введенные данные пользователя в Api
   function handleUpdateUser(dataUser) {
+    console.log('handleUpdateUser => patchUserInfo');
+
     setLoading(true);
     api
       .patchUserInfo(dataUser)
       .then((resUser) => {
-        setCurrentUser(resUser);
+        console.log('patchUserInfo => ', resUser);
+        setCurrentUser(resUser.data);
       })
       .then(() => {
         closeAllPopups();
@@ -113,11 +118,14 @@ function App() {
 
   // сохраняем новый аватар пользователя в Api
   function handleUpdateAvatar(linkAvatar) {
+    console.log('handleUpdateAvatar => patchUserAvatar');
+
     setLoading(true);
     api
       .patchUserAvatar(linkAvatar)
       .then((resUser) => {
-        setCurrentUser(resUser);
+        console.log('patchUserAvatar => ', resUser);
+        setCurrentUser(resUser.data);
       })
       .then(() => closeAllPopups())
       .catch((err) => console.log(err))
@@ -126,11 +134,13 @@ function App() {
 
   // добавляем новую карточку
   function handleAddPlaceSubmit(dataCard) {
+    console.log('handleAddPlaceSubmit => postNewCard');
+
     setLoading(true);
     api
       .postNewCard(dataCard)
       .then((newCard) => {
-        setCurrentCards([newCard, ...currentCards]);
+        setCurrentCards([newCard.data, ...currentCards]);
       })
       .then(() => closeAllPopups())
       .catch((err) => console.log(err))
@@ -139,13 +149,20 @@ function App() {
 
   // обработчик лайков и дизлайков
   function handleCardLike(card) {
+    console.log('handleCardLike => ');
+
     // Снова проверяем, есть ли уже лайк на этой карточке
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
     // Отправляем запрос в API и получаем обновлённые данные карточки
     (!isLiked ? api.addLikeCard(card._id) : api.deleteLikeCard(card._id))
       .then((newCard) => {
+        console.log(
+          'handleCardLike => !isLiked =>',
+          !isLiked ? 'addLikeCard =>' : 'deleteLikeCard =>',
+          newCard,
+        );
         setCurrentCards((state) =>
-          state.map((c) => (c._id === card._id ? newCard : c)),
+          state.map((c) => (c._id === card._id ? newCard.data : c)),
         );
       })
       .catch((err) => console.log(err));
@@ -153,6 +170,8 @@ function App() {
 
   // обработчик удаления карточки
   function handleCardDeleteSubmit(card) {
+    console.log('handleCardDeleteSubmit => deleteCard');
+
     setLoading(true);
     api
       .deleteCard(card._id)
@@ -165,64 +184,78 @@ function App() {
       .finally(() => setLoading(false));
   }
 
-  // const cbTokenCheck = useCallback(async () => {
-  //   try {
-  //     setLoading(true);
-  //     const jwt = localStorage.getItem('jwt');
-  //     if (!jwt) {
-  //       throw new Error('Ошибка, нет токена');
-  //     }
-  //     const userAccaunt = await auth.getContent(jwt);
-  //     if (userAccaunt) {
-  //       setAccount(userAccaunt.data);
-  //       setLoggedIn(true);
-  //       navigate('/');
-  //     }
-  //   } catch {
-  //     setLoggedIn(false);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }, [navigate]);
+  const cbTokenCheck = useCallback(async () => {
+    // console.log('cbTokenCheck => useCallback =>');
 
-  // useEffect(() => {
-  //   cbTokenCheck();
-  // }, [cbTokenCheck]);
+    try {
+      setLoading(true);
+      const jwt = Cookies.get();
+      if (!jwt) {
+        setLoggedIn(false);
+            console.log('cbTokenCheck => try => !jwt ');
+
+        throw new Error('Ошибка, нет куки. Требуется авторизация');
+      }
+      const userInfo = await api.getUserInfo();
+      if (userInfo) {
+        // setCurrentUser(userInfo.data);
+        setLoggedIn(true);
+        navigate('/');
+      }
+    } catch {
+      setLoggedIn(false);
+    } finally {
+      setLoading(false);
+    }
+  }, navigate);
+
+  useEffect(() => {
+    cbTokenCheck();
+  }, [cbTokenCheck]);
 
   // Авторизация
   const cbLogin = ({ email, password }) => {
+    console.log('cbLogin => authorize =>');
+
     setLoading(true);
-    auth
+    api
       .authorize({ email, password })
       .then((res) => {
         console.log('cbLogin => auth.authorize => res.data', res.data);
+        setCurrentUser(res.data);
+        console.log(Cookies.get());
 
-        setAccount(res.data);
         // res.token && localStorage.setItem('jwt', res.token);
         navigate('/');
-        setLoggedIn(true);
+        // setLoggedIn(true);
       })
       .catch((err) => {
-        console.log(err);
+        console.log('cbLogin => auth.authorize => err', err);
         setInfoTooltipOpen(true);
+        setErrMessage(err.message);
         setInfoTooltip(false);
       })
       .finally(() => {
         setLoading(false);
+        setLoggedIn(true);
       });
   };
 
   // Регистрация
   const cbRegister = ({ email, password }) => {
+    console.log('cbRegister => register =>');
+
     setLoading(true);
-    auth
+    api
       .register({ email, password })
       .then((res) => {
-        console.log(res);
+        console.log('cbRegister => auth.register => res', res);
+        console.log('cbRegister => auth.register => res.data', res?.data);
         setInfoTooltip(true);
       })
       .catch((err) => {
-        console.log(err);
+        console.log('cbRegister => auth.register => err', err);
+        setErrMessage(err.message);
         setInfoTooltip(false);
       })
       .finally(() => {
@@ -231,18 +264,32 @@ function App() {
       });
   };
 
+  // Выход
   const cbLogOut = () => {
-    localStorage.removeItem('jwt');
-    navigate('/sign-in');
+    console.log('cbLogOut => getSignout =>');
+
+    setLoading(true);
+    // localStorage.removeItem('jwt');
+    api
+      .getSignout()
+      .then((res) => {
+        console.log('cbLogOut => auth.getSignout => res', res);
+        console.log(Cookies.get('jwt'));
+        setLoggedIn(false);
+      })
+      .catch((err) => {
+        console.log('cbLogOut => auth.getSignout => err', err);
+        setInfoTooltip(false);
+      })
+      .finally(() => {
+        setLoading(false);
+        navigate('/sign-in');
+      });
   };
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <Header
-        logOut={cbLogOut}
-        account={account.email}
-        isLoggedIn={isLoggedIn}
-      />
+      <Header logOut={cbLogOut} isLoggedIn={isLoggedIn} />
       <Routes>
         <Route
           index
@@ -325,6 +372,7 @@ function App() {
         isOpen={isInfoTooltipOpen}
         onClose={closeAllPopups}
         isInfoTooltip={isInfoTooltip}
+        errMessage={errMessage}
       />
 
       <Loading isLoading={isLoading} />

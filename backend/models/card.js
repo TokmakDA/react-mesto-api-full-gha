@@ -14,10 +14,11 @@ const cardSchema = new Schema({
     type: String,
     required: true,
     validate(value) {
-      if (!validator.isURL(value))
+      if (!validator.isURL(value)) {
         throw new Error(
           'Поле "Ссылка на картинку" должно быть ссылкой. Введите правильную ссылку',
         );
+      }
     },
   },
   owner: {

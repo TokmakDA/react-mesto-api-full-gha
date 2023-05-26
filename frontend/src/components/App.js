@@ -55,19 +55,12 @@ function App() {
     setInfoTooltipOpen(true);
   };
 
-  // // Получаем первичные данные
-  // useEffect(() => {
-  //   console.log('useEffect => getInitialsData');
-
-  //   api
-  //     .getInitialsData()
-  //     .then(([userInfo, initialCards]) => {
-  //       console.log('getInitialsData => ', userInfo, initialCards);
-  //       setCurrentUser(userInfo.data);
-  //       setCurrentCards(initialCards.data);
-  //     })
-  //     .catch((err) => console.log('getInitialsData => err', err));
-  // }, []);
+  // Закрыть показ ошибки
+  const closeErrorDisplay = useCallback(() => {
+    console.log('closeErrorDisplay => err');
+    setTimeout(() => setErrMessage(null), 1000);
+    setInfoTooltipOpen(false);
+  }, []);
 
   // Обработчики открытия попапов
   function handleEditAvatarClick() {
@@ -89,7 +82,7 @@ function App() {
     setCurrentCard(card);
     setImagePopupOpen(true);
   }
-  // обработчик открытия попапа с картинкой карточки
+  // обработчик закрытия попапа с картинкой карточки
   function closseImagepopup() {
     setCurrentCard(null);
     setImagePopupOpen(false);
@@ -102,8 +95,7 @@ function App() {
     setAddPlacePopupOpen(false);
     closseImagepopup();
     setCardDeletePopupOpen(false);
-    setInfoTooltipOpen(false);
-    setTimeout(() => setErrMessage(null), 1000);
+    // closeErrorDisplay();
   }, []);
 
   // сохраняем введенные данные пользователя в Api
@@ -120,7 +112,10 @@ function App() {
       .then(() => {
         closeAllPopups();
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        console.log(err);
+        showError(err);
+      })
       .finally(() => setLoading(false));
   }
 
@@ -136,7 +131,10 @@ function App() {
         setCurrentUser(resUser.data);
       })
       .then(() => closeAllPopups())
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        console.log(err);
+        showError(err);
+      })
       .finally(() => setLoading(false));
   }
 
@@ -397,7 +395,7 @@ function App() {
 
       <InfoTooltip
         isOpen={isInfoTooltipOpen}
-        onClose={closeAllPopups}
+        onClose={closeErrorDisplay}
         isInfoTooltip={isInfoTooltip}
         errMessage={errMessage}
       />

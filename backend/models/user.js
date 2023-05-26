@@ -26,10 +26,11 @@ const userSchema = new Schema({
     default:
       'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate(value) {
-      if (!validator.isURL(value))
+      if (!validator.isURL(value)) {
         throw new Error(
           'Поле "Аватар" должно быть ссылкой. Введите правильную ссылку',
         );
+      }
     },
   },
   email: {
@@ -37,8 +38,9 @@ const userSchema = new Schema({
     required: true,
     unique: true,
     validate(value) {
-      if (!validator.isEmail(value))
+      if (!validator.isEmail(value)) {
         throw new Error('Введите правильный Email');
+      }
     },
   },
   password: {

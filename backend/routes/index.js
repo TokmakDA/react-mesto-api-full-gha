@@ -1,5 +1,4 @@
 const { celebrate } = require('celebrate');
-const handleCORS = require('../middlewares/cors');
 const auth = require('../middlewares/auth');
 const { cardRouter } = require('./cards');
 const { userRouter } = require('./users');
@@ -11,7 +10,6 @@ const limiter = require('../middlewares/limiter');
 module.exports = require('express')
   .Router()
   .use(limiter)
-  .use(handleCORS)
   .post('/signin', celebrate(userSchemaLogin), login)
   .post('/signup', celebrate(userSchema), createUser)
   .get('/signout', signout)

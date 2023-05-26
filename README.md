@@ -8,7 +8,7 @@
 
 ## Ссылки на проект
 
-IP-адрес 84.252.142.173
+IP 84.252.142.173
 
 Frontend https://tokmak-da.mesto.nomoredomains.monster
 

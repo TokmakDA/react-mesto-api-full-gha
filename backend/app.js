@@ -1,12 +1,14 @@
 require('dotenv').config();
 const express = require('express');
 const process = require('process');
+const cors = require('cors');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const routes = require('./routes');
 const { handleError } = require('./errors/errors');
+const corsOptions = require('./utils/corsOptions');
 
 const app = express();
 const { PORT = 3000 } = process.env;
@@ -24,7 +26,7 @@ app.get('/crash-test', () => {
     throw new Error('Сервер сейчас упадёт');
   }, 0);
 });
-
+app.use(cors(corsOptions));
 app.use('/', routes);
 app.use(errorLogger); // подключаем логгер ошибок
 app.use(errors()); // обработчик ошибок celebrate

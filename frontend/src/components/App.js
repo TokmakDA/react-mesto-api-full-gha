@@ -204,7 +204,7 @@ function App() {
       const jwt = Cookies.get('jwt');
       if (!jwt) {
         setLoggedIn(false);
-        console.log('cbTokenCheck => try => !jwt ', Cookies.get('jwt'));
+        console.log('cbTokenCheck => try => !jwt ');
         Cookies.get('jwt');
 
         throw new Error('Требуется авторизация');

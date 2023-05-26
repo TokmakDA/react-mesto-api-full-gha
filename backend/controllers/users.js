@@ -63,7 +63,7 @@ const login = (req, res, next) => {
           maxAge: 3600000 * 24 * 7,
           httpOnly: false,
           sameSite: 'None',
-          Secure: true,
+          // Secure: true,
         })
         .status(200)
         .json({

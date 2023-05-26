@@ -21,9 +21,10 @@ const allowedCors = [
 // Значение для заголовка Access-Control-Allow-Methods по умолчанию (разрешены все типы запросов)
 const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
 
-module.exports = corsOptions = {
+const corsOptions = {
   origin: allowedCors,
   methods: DEFAULT_ALLOWED_METHODS,
   credentials: true,
 };
 
+module.exports = corsOptions;

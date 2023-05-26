@@ -33,18 +33,17 @@ const checkToken = async (token) => {
       return payloadDV;
     } catch (err) {
       if (
-        err.name === 'JsonWebTokenError' &&
-        err.message === 'invalid signature'
+        err.name === 'JsonWebTokenError'
+        && err.message === 'invalid signature'
       ) {
         console.log(
           '\x1b[32m%s\x1b[0m',
           'Всё в порядке. Секретные ключи отличаются',
         );
         return false;
-      } else {
-        console.log('\x1b[33m%s\x1b[0m', 'Что-то не так', err);
-        return false;
       }
+      console.log('\x1b[33m%s\x1b[0m', 'Что-то не так', err);
+      return false;
     }
   }
 };

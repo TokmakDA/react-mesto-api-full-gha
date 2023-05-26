@@ -151,7 +151,10 @@ function App() {
         setCurrentCards([newCard.data, ...currentCards]);
       })
       .then(() => closeAllPopups())
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        console.log(err);
+        showError(err);
+      })
       .finally(() => setLoading(false));
   }
 
@@ -188,7 +191,10 @@ function App() {
         console.log(res.message);
       })
       .then(() => closeAllPopups())
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        console.log(err);
+        showError(err);
+      })
       .finally(() => setLoading(false));
   }
 
@@ -215,6 +221,7 @@ function App() {
       }
     } catch (err) {
       console.log(err.message);
+      // showError(err);
       setLoggedIn(false);
     } finally {
       setLoading(false);
@@ -223,7 +230,7 @@ function App() {
 
   useEffect(() => {
     cbTokenCheck();
-  }, );
+  }, [cbTokenCheck]);
 
   // Авторизация
   const cbLogin = ({ email, password }) => {
@@ -245,9 +252,10 @@ function App() {
       })
       .catch((err) => {
         console.log('cbLogin => auth.authorize => err', err);
-        setInfoTooltipOpen(true);
-        setErrMessage(err.message);
-        setInfoTooltip(false);
+        // setInfoTooltipOpen(true);
+        // setErrMessage(err.message);
+        // setInfoTooltip(false);
+        showError(err);
       })
       .finally(() => {
         setLoading(false);

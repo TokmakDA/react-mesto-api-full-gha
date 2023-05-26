@@ -5,46 +5,38 @@ class Api {
     this._credentials = options.credentials;
   }
 
-  _checkResponse = (res) => {
+  _checkResponse = async (res) => {
     // res.ok
     //   ? res.json()
     //   : Promise.reject(`Ошибка: ${res.status} , ${res.statusText}`);
 
-    //   if (res.ok) {
-    //     return await res.json();
-    //   } else {
-    //     try {
-    //       const err = await res.json();
-    //       if (err.validation) {
-    //         console.log(err.validation);
-    //         throw new Error(err.validation.body.message ?? err.message);
-    //       } else if (err.message) {
-    //         throw new Error(err.message);
-    //       } else {
-    //         throw new Error(err);
-    //       }
-    //     } catch (e) {
-    //       return Promise.reject(e);
-    //     }
-    //   }
-    // };
-
     if (res.ok) {
-      return res.json();
+      return await res.json();
     } else {
-      res.json().then((err) => {
+      try {
+        const err = await res.json();
+        console.log('_checkResponse => !res.ok => err =>', err);
         if (err.validation) {
-          console.log(err.validation);
+          console.log(
+            '_checkResponse => !res.ok => err => err.validation',
+            err.validation,
+          );
           throw new Error(err.validation.body.message ?? err.message);
         } else if (err.message) {
+          console.log(
+            '_checkResponse => !res.ok => err => err.message',
+            err.message,
+          );
           throw new Error(err.message);
         } else {
-          throw new Error(err);
+          console.log('_checkResponse => !res.ok => err => else =>', err);
+          throw new Error('Неизвестная ошибка');
         }
-      });
+      } catch (e) {
+        return Promise.reject(e);
+      }
     }
   };
-  //
 
   _makeRequest(url, method, body) {
     const config = {

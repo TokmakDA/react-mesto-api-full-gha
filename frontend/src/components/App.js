@@ -47,6 +47,14 @@ function App() {
 
   const navigate = useNavigate();
 
+  // Показать ошибку
+  const showError = (err) => {
+    console.log('showError => err', err);
+    setErrMessage(err.message);
+    setInfoTooltip(false);
+    setInfoTooltipOpen(true);
+  };
+
   // // Получаем первичные данные
   // useEffect(() => {
   //   console.log('useEffect => getInitialsData');
@@ -205,8 +213,8 @@ function App() {
         setLoggedIn(true);
         navigate('/');
       }
-    } catch(err) {
-      console.log(err.message)
+    } catch (err) {
+      console.log(err.message);
       setLoggedIn(false);
     } finally {
       setLoading(false);
@@ -261,8 +269,9 @@ function App() {
       })
       .catch((err) => {
         console.log('cbRegister => auth.register => err', err);
-        setErrMessage(err.message);
-        setInfoTooltip(false);
+        // setErrMessage(err.message);
+        // setInfoTooltip(false);
+        showError(err);
       })
       .finally(() => {
         setInfoTooltipOpen(true);
@@ -280,12 +289,16 @@ function App() {
       .getSignout()
       .then((res) => {
         console.log('cbLogOut => auth.getSignout => res', res);
-        console.log('cbLogOut => getSignout => Cookies.get(jwt)', Cookies.get('jwt'));
+        console.log(
+          'cbLogOut => getSignout => Cookies.get(jwt)',
+          Cookies.get('jwt'),
+        );
         setLoggedIn(false);
       })
       .catch((err) => {
         console.log('cbLogOut => auth.getSignout => err', err);
-        setInfoTooltip(false);
+        // setInfoTooltip(false);
+        showError(err);
       })
       .finally(() => {
         setLoading(false);

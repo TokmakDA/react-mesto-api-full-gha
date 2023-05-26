@@ -197,14 +197,12 @@ function App() {
   }
 
   const cbTokenCheck = useCallback(async () => {
-    console.log('cbTokenCheck => useCallback => Cookies.get()=>');
-
     try {
       setLoading(true);
       const jwt = Cookies.get('jwt');
       if (!jwt) {
         setLoggedIn(false);
-        console.log('cbTokenCheck => try => !jwt ', Cookies.get());
+        console.log('cbTokenCheck => try => !jwt ', Cookies.get('jwt'));
         throw new Error('Требуется авторизация');
       }
       const initialsData = await api.getInitialsData();

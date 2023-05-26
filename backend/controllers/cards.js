@@ -31,22 +31,22 @@ const deleteCard = (req, res, next) => {
   Card.findById(cardId)
     .populate(['owner', 'likes'])
     .orFail(() => {
-      throw new NotFoundError(`Card ${cardId} is not found`);
+      throw new NotFoundError(`Карточка ${cardId} не найдена`);
     })
     .then((card) => {
       if (card.owner._id.toString() === req.user._id.toString()) {
         Card.findByIdAndRemove(cardId)
           .orFail(() => {
-            throw new NotFoundError(`Card ${cardId} is not found`);
+            throw new NotFoundError(`Карточка ${cardId} не найдена`);
           })
           .then(() => {
             res.json({
-              message: `card with id: ${cardId} successfully deleted`,
+              message: `Карточка с id: ${cardId} успешно удалена`,
             });
           });
         return;
       }
-      throw new ForbiddenError(`You are not the owner Card: ID ${cardId}`);
+      throw new ForbiddenError(`Вы не являетесь владельцем карточки id:${cardId}`);
     })
     .catch(next);
 };
@@ -61,7 +61,7 @@ const addLikeCard = (req, res, next) => {
   )
     .populate(['owner', 'likes'])
     .orFail(() => {
-      throw new NotFoundError(`Card ${cardId} is not found`);
+      throw new NotFoundError(`Карточка ${cardId} не найдена`);
     })
     .then((card) => {
       res.json({ data: card });
@@ -80,7 +80,7 @@ const deleteLikeCard = (req, res, next) => {
   )
     .populate(['owner', 'likes'])
     .orFail(() => {
-      throw new NotFoundError(`Card ${cardId} is not found`);
+      throw new NotFoundError(`Карточка ${cardId} не найдена`);
     })
     .then((card) => {
       res.json({ data: card });

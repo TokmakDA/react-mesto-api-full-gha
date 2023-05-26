@@ -14,7 +14,7 @@ const cardSchema = new Schema({
     type: String,
     required: true,
     validate(value) {
-      if (!validator.isURL(value)) throw new Error('Invalid Card link');
+      if (!validator.isURL(value)) throw new Error('Поле должно быть ссылкой. Введите правильную ссылку');
     },
   },
   owner: {

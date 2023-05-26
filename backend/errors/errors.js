@@ -18,7 +18,7 @@ function handleError(err, req, res, next) {
   if (err instanceof SomeError) {
     returnErrorToUser(err, req, res, next);
   } else if (err.name === 'CastError') {
-    const newErr = new BadRequestError('Incorrect ID');
+    const newErr = new BadRequestError('Некорректный ID.');
     returnErrorToUser(newErr, req, res, next);
   } else if (err.name === 'ValidationError') {
     const message = Object.values(err.errors)
@@ -30,7 +30,7 @@ function handleError(err, req, res, next) {
     // Ошибки перехваченные от celebrate
     next(err);
   } else {
-    const newErr = new DefaltError('Swth went wrong. Все пошло не так.');
+    const newErr = new DefaltError('Что-то пошло не так. Внутренняя ошибка сервера.');
     returnErrorToUser(newErr, req, res, next);
   }
 }

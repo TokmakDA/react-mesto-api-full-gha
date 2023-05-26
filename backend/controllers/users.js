@@ -18,7 +18,7 @@ const getUser = (req, res, next) => {
 
   User.findById(userId)
     .orFail(() => {
-      throw new NotFoundError(`User ${userId} is not found`);
+      throw new NotFoundError(`Пользователь ${userId} не найден`);
     })
     .then((user) => {
       res.json({ data: user });
@@ -32,7 +32,7 @@ const getUserMe = (req, res, next) => {
 
   User.findById(userId)
     .orFail(() => {
-      throw new NotFoundError(`User ${userId} is not found`);
+      throw new NotFoundError(`Пользователь ${userId} не найден`);
     })
     .then((user) => {
       // выбираем поля для передачи пользователю
@@ -85,13 +85,7 @@ const signout = (req, res) => {
 
 //  POST /signup — создаёт пользователя
 const createUser = (req, res, next) => {
-  const {
-    email,
-    password,
-    name,
-    about,
-    avatar,
-  } = req.body;
+  const { email, password, name, about, avatar } = req.body;
   bcrypt
     .hash(password, 10)
     .then((hash) => {
@@ -116,7 +110,11 @@ const createUser = (req, res, next) => {
         })
         .catch((err) => {
           if (err.code === 11000) {
-            next(new ConflictError('the user already exists'));
+            next(
+              new ConflictError(
+                'Пользователь с введенным Вами Email уже существует',
+              ),
+            );
           } else {
             next(err);
           }
@@ -139,7 +137,7 @@ const patchUser = (req, res, next) => {
     },
   )
     .orFail(() => {
-      throw new NotFoundError(`User ${userId} is not found`);
+      throw new NotFoundError(`Пользователь ${userId} не найден`);
     })
     .then((user) => {
       res.json({
@@ -169,7 +167,7 @@ const patchAvatar = (req, res, next) => {
     },
   )
     .orFail(() => {
-      throw new NotFoundError(`User ${userId} is not found`);
+      throw new NotFoundError(`Пользователь ${userId} не найден`);
     })
     .then((user) => {
       res.json({

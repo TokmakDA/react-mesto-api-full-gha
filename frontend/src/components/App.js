@@ -200,15 +200,15 @@ function App() {
     try {
       setLoading(true);
       const jwt = Cookies.get('jwt');
+      console.log('cbTokenCheck => jwt', jwt);
+
       if (!jwt) {
         setLoggedIn(false);
-        console.log('cbTokenCheck => try => !jwt ', Cookies.get('jwt'));
+        console.log('cbTokenCheck => try => !jwt ');
         throw new Error('Требуется авторизация');
       }
       const initialsData = await api.getInitialsData();
       if (initialsData) {
-        // console.log(initialsData);
-        // console.log('getInitialsData => ', initialsData[0], initialsData[1]);
         setCurrentUser(initialsData[0].data);
         setCurrentCards(initialsData[1].data);
         setLoggedIn(true);
@@ -241,7 +241,7 @@ function App() {
         // console.log('cbLogin => auth.authorize => Cookies.get()', Cookies.get());
         console.log(
           'cbLogin => auth.authorize => Cookies.get(jwt)',
-          Cookies.get(),
+          Cookies.get('jwt'),
         );
         cbTokenCheck();
         // res.token && localStorage.setItem('jwt', res.token);

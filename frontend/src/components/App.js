@@ -223,7 +223,7 @@ function App() {
 
   useEffect(() => {
     cbTokenCheck();
-  }, [cbTokenCheck]);
+  }, );
 
   // Авторизация
   const cbLogin = ({ email, password }) => {

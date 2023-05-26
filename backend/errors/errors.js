@@ -3,8 +3,9 @@ const { ConflictError } = require('./ConflictError');
 const { DefaltError } = require('./DefaltError');
 const { ForbiddenError } = require('./ForbiddenError');
 const { NotFoundError } = require('./NotFoundError');
-const SomeError = require('./SomeError');
+const { LimitterError } = require('./LimitterError');
 const { UnauthorizedError } = require('./UnauthorizedError');
+const SomeError = require('./SomeError');
 
 // Вернуть ошибку пользователю
 const returnErrorToUser = (err, req, res, next) => {
@@ -42,5 +43,6 @@ module.exports = {
   DefaltError,
   ForbiddenError,
   NotFoundError,
+  LimitterError,
   UnauthorizedError,
 };

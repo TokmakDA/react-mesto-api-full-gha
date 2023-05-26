@@ -3,7 +3,7 @@ const { checkToken } = require('../utils/token');
 
 module.exports = async (req, res, next) => {
   const token = req.cookies.jwt;
-  const newErr = new UnauthorizedError('login error');
+  const newErr = new UnauthorizedError('Ошибка входа в систему');
 
   // убеждаемся, что токен присутсвует
   if (!token) {

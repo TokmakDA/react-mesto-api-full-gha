@@ -26,7 +26,7 @@ const userSchema = new Schema({
     default:
       'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate(value) {
-      if (!validator.isURL(value)) throw new Error('Invalid Avatar link');
+      if (!validator.isURL(value)) throw new Error('Поле должно быть ссылкой. Введите правильную ссылку');
     },
   },
   email: {
@@ -34,7 +34,7 @@ const userSchema = new Schema({
     required: true,
     unique: true,
     validate(value) {
-      if (!validator.isEmail(value)) throw new Error('Invalid Email');
+      if (!validator.isEmail(value)) throw new Error('Введите правильный Email');
     },
   },
   password: {
@@ -51,14 +51,14 @@ userSchema.statics.findUserByCredentials = function (email, password) {
       // не нашёлся — отклоняем промис
       if (!user) {
         return Promise.reject(
-          new UnauthorizedError('Incorrect email or password'),
+          new UnauthorizedError('Неправильные почта или пароль'),
         );
       }
       // нашёлся — сравниваем хеши
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
           return Promise.reject(
-            new UnauthorizedError('Incorrect email or password'),
+            new UnauthorizedError('Неправильные почта или пароль'),
           );
         }
         return user; // вернем user

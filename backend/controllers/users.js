@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const { NotFoundError, ConflictError } = require('../errors/errors');
 const { generateToken } = require('../utils/token');
-const corsOptions = require('../utils/corsOptions');
 
 //  GET /users — возвращает всех пользователей
 const getUsers = (req, res, next) => {
@@ -65,7 +64,6 @@ const login = (req, res, next) => {
           httpOnly: false,
           sameSite: 'None',
           Secure: true,
-          domain: corsOptions.origin,
         })
         .status(200)
         .json({

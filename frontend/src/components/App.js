@@ -199,7 +199,7 @@ function App() {
   const cbTokenCheck = useCallback(async () => {
     try {
       setLoading(true);
-      const jwt = Cookies.get('jwt');
+      const jwt = Cookies.get();
       console.log('cbTokenCheck => jwt', jwt);
 
       if (!jwt) {
@@ -237,14 +237,12 @@ function App() {
       .then((res) => {
         // console.log('cbLogin => auth.authorize => res.data', res.data);
         setCurrentUser(res.data);
-        // console.log('cbLogin => auth.authorize =>  res.cookie', res.cookie);
-        // console.log('cbLogin => auth.authorize => Cookies.get()', Cookies.get());
+
         console.log(
           'cbLogin => auth.authorize => Cookies.get(jwt)',
-          Cookies.get('jwt'),
+          Cookies.get(),
         );
         cbTokenCheck();
-        // res.token && localStorage.setItem('jwt', res.token);
         navigate('/');
         // setLoggedIn(true);
       })

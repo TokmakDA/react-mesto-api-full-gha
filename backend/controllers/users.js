@@ -81,7 +81,14 @@ const login = (req, res, next) => {
 
 //  GET /signout — очищает куки
 const signout = (req, res) => {
-  res.clearCookie('jwt').send({ message: 'Exit' });
+  res
+    .clearCookie('jwt', {
+      maxAge: 3600000 * 24 * 7,
+      httpOnly: false,
+      sameSite: 'None',
+      Secure: true,
+    })
+    .send({ message: 'Exit' });
 };
 
 //  POST /signup — создаёт пользователя

@@ -28,7 +28,7 @@ module.exports = (req, res, next) => {
     res.header('Access-Control-Allow-Origin', origin);
   }
 
-  console.log(req.headers);
+  // console.log(req.headers);
 
   const { method } = req; // Сохраняем тип запроса (HTTP-метод) в соответствующую переменную
   const requestHeaders = req.headers['access-control-request-headers'];

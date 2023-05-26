@@ -62,8 +62,7 @@ const login = (req, res, next) => {
         .cookie('jwt', token, {
           maxAge: 3600000 * 24 * 7,
           httpOnly: false,
-          sameSite: 'None',
-          Secure: false,
+          sameSite: 'Strict',
         })
         .status(200)
         .json({
@@ -81,7 +80,6 @@ const login = (req, res, next) => {
 
 //  GET /signout — очищает куки
 const signout = (req, res) => {
-  us;
   res.clearCookie('jwt').send({ message: 'Exit' });
 };
 

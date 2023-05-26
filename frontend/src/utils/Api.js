@@ -134,7 +134,7 @@ class Api {
 }
 
 const config = {
-  baseUrl: 'http://localhost:3000',
+  baseUrl: 'https://api.tokmak-da.mesto.nomoredomains.rocks',
   credentials: 'include',
   headers: {
     Accept: 'application/json',

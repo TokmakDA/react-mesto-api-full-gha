@@ -13,6 +13,9 @@ const allowedCors = [
   'api.tokmak-da.mesto.nomoredomains.rocks',
   'https://api.tokmak-da.mesto.nomoredomains.rocks',
   'http://api.tokmak-da.mesto.nomoredomains.rocks',
+  'https://tokmakda.github.io/react-mesto-api-full-gha/',
+  'http://tokmakda.github.io/react-mesto-api-full-gha/',
+  'tokmakda.github.io/react-mesto-api-full-gha/',
 ];
 // Значение для заголовка Access-Control-Allow-Methods по умолчанию (разрешены все типы запросов)
 const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';

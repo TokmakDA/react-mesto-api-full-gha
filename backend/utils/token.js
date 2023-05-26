@@ -17,6 +17,7 @@ function generateToken(payload) {
 
 function checkToken(token) {
   if (!token) {
+    console.log('checkToken=> !token')
     return false;
   }
   try {
@@ -29,6 +30,7 @@ function checkToken(token) {
     // );
 
     // Проверяем по ключу Production и возвращаем пейлоуд
+    console.log('checkToken=> token => return jwt.verify(token, JWT_SECRET)')
     return jwt.verify(token, JWT_SECRET);
   } catch (err) {
     // // Доп проверка если ошибка по ключу DEV
@@ -43,6 +45,7 @@ function checkToken(token) {
     // } else {
     //   console.log('\x1b[33m%s\x1b[0m', 'Что-то не так', err);
     // }
+    console.log('checkToken=> token => err')
     return false;
   }
 }

@@ -30,7 +30,7 @@ function handleError(err, req, res, next) {
     // Ошибки перехваченные от celebrate
     next(err);
   } else {
-    const newErr = new DefaltError('Swth went wrong');
+    const newErr = new DefaltError('Swth went wrong. Все пошло не так.');
     returnErrorToUser(newErr, req, res, next);
   }
 }

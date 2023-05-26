@@ -1,11 +1,34 @@
 const { Joi } = require('celebrate');
 
 const userConfig = {
-  name: Joi.string().min(2).max(30),
-  about: Joi.string().min(2).max(30),
-  avatar: Joi.string().regex(/(https?:\/\/)\w+?(\S+|W+)?(\w+)?.\w{2,15}\/?/),
-  email: Joi.string().email().required(),
-  password: Joi.string().min(8).required(),
+  name: Joi.string().min(2).max(30).label('Имя').messages({
+    'string.empty': `Поле {#label} не может быть пустым`,
+    'string.min': `Поле {#label} должно быть не менее {#limit} символов`,
+    'string.max': `Поле {#label} должно быть не более {#limit} символов`,
+  }),
+  about: Joi.string().min(2).max(30).label('О себе').messages({
+    'string.empty': `Поле {#label} не может быть пустым`,
+    'string.min': `Поле {#label} должно быть не менее {#limit} символов`,
+    'string.max': `Поле {#label} должно быть не более {#limit} символов`,
+  }),
+  avatar: Joi.string()
+    .regex(/(https?:\/\/)\w+?(\S+|W+)?(\w+)?.\w{2,15}\/?/)
+    .label('Аватар')
+    .messages({
+      'string.pattern.base': `Поле {#label} должно быть ссылкой. Не соответствует требуемому образцу {#regex}`,
+      'string.base': `Поле {#label} должно соответствовать предложенному образцу`,
+      'string.empty': `Поле {#label} не может быть пустым`,
+    }),
+  email: Joi.string().email().required().label('Email').messages({
+    'string.email': `{#label} должен быть действительным адресом электронной почты`,
+    'string.empty': `Поле {#label} не может быть пустым`,
+    'any.required': `Поле {#label} обязательное`,
+  }),
+  password: Joi.string().min(8).required().label('Пароль').messages({
+    'string.empty': `Поле {#label} не может быть пустым`,
+    'string.min': `Ваш {#label} должн быть не менее {#limit} символов`,
+    'any.required': `Поле {#label} обязательное`,
+  }),
 };
 
 const userSchema = {
@@ -35,10 +58,21 @@ const userIdSchema = {
 
 const cardSchema = {
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30).required(),
+    name: Joi.string().min(2).max(30).required().label('Название').messages({
+      'string.empty': `Поле {#label} не может быть пустым`,
+      'string.min': `Поле {#label} должно быть не менее {#limit} символов`,
+      'string.max': `Поле {#label} должно быть не более {#limit} символов`,
+      'any.required': `Поле {#label} обязательное`,
+    }),
     link: Joi.string()
       .required()
-      .regex(/(https?:\/\/)\w+?(\S+|W+)?(\w+)?.\w{2,15}\/?/),
+      .regex(/(https?:\/\/)\w+?(\S+|W+)?(\w+)?.\w{2,15}\/?/)
+      .label('Ссылка на картинку')
+      .messages({
+        'string.pattern.base': `Поле {#label} должно быть ссылкой. Не соответствует требуемому образцу {#regex}`,
+        'string.base': `Поле {#label} должно соответствовать предложенному образцу`,
+        'string.empty': `Поле {#label} не может быть пустым`,
+      }),
   }),
 };
 

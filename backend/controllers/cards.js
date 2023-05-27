@@ -46,7 +46,7 @@ const deleteCard = (req, res, next) => {
           });
         return;
       }
-      throw new ForbiddenError(`Вы не являетесь владельцем карточки id:${cardId}`);
+      throw new ForbiddenError(`Вы не являетесь владельцем карточки id: ${cardId}`);
     })
     .catch(next);
 };

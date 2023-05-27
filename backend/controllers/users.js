@@ -94,7 +94,7 @@ const signout = (req, res) => {
 const createUser = (req, res, next) => {
   const {
     email,
-    password: hash,
+    password,
     name,
     about,
     avatar,

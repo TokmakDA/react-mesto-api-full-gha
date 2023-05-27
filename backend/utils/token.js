@@ -33,8 +33,8 @@ const checkToken = (token) => {
       return payload;
     } catch (err) {
       if (
-        err.name === 'JsonWebTokenError' &&
-        err.message === 'invalid signature'
+        err.name === 'JsonWebTokenError'
+        && err.message === 'invalid signature'
       ) {
         console.log(
           '\x1b[32m%s\x1b[0m',

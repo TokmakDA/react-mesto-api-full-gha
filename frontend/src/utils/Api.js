@@ -14,21 +14,11 @@ class Api {
     } else {
       try {
         const err = await res.json();
-        console.log('_checkResponse => !res.ok => err =>', err);
         if (err.validation) {
-          console.log(
-            '_checkResponse => !res.ok => err => err.validation',
-            err.validation,
-          );
           throw new Error(err.validation.body.message ?? err.message);
         } else if (err.message) {
-          console.log(
-            '_checkResponse => !res.ok => err => err.message',
-            err.message,
-          );
           throw new Error(err.message);
         } else {
-          console.log('_checkResponse => !res.ok => err => else =>', err);
           throw new Error('Неизвестная ошибка');
         }
       } catch (e) {

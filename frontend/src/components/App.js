@@ -114,7 +114,7 @@ function App() {
         closeAllPopups();
       })
       .catch((err) => {
-        console.log(err);
+        console.log('handleUpdateUser => err', err);
         openInfoTooltip(err);
       })
       .finally(() => setLoading(false));
@@ -131,7 +131,7 @@ function App() {
       })
       .then(() => closeAllPopups())
       .catch((err) => {
-        console.log(err);
+        console.log('handleUpdateAvatar => err', err);
         openInfoTooltip(err);
       })
       .finally(() => setLoading(false));
@@ -147,7 +147,7 @@ function App() {
       })
       .then(() => closeAllPopups())
       .catch((err) => {
-        console.log(err);
+        console.log('handleAddPlaceSubmit => err', err);
         openInfoTooltip(err);
       })
       .finally(() => setLoading(false));
@@ -160,16 +160,11 @@ function App() {
     // Отправляем запрос в API и получаем обновлённые данные карточки
     (!isLiked ? api.addLikeCard(card._id) : api.deleteLikeCard(card._id))
       .then((newCard) => {
-        console.log(
-          'handleCardLike => !isLiked =>',
-          !isLiked ? 'addLikeCard =>' : 'deleteLikeCard =>',
-          newCard,
-        );
         setCurrentCards((state) =>
           state.map((c) => (c._id === card._id ? newCard.data : c)),
         );
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log('handleCardLike => err', err));
   }
 
   // обработчик удаления карточки
@@ -201,7 +196,7 @@ function App() {
         setLoggedIn(true);
       })
       .catch((err) => {
-        console.log('cbLogin => auth.authorize => err', err);
+        console.log('cbLogin => err', err);
         openInfoTooltip(err);
       })
       .finally(() => {
@@ -221,7 +216,7 @@ function App() {
         openInfoTooltip();
       })
       .catch((err) => {
-        console.log('cbRegister => auth.register => err', err);
+        console.log('cbRegister => err', err);
         openInfoTooltip(err);
       })
       .finally(() => {
@@ -234,15 +229,8 @@ function App() {
       setLoading(true);
       const jwtToken = localStorage.getItem('jwt');
       const jwtCookie = Cookies.get('jwt');
-      console.log('cbTokenCheck => jwtCookie =>', jwtCookie);
-      console.log('cbTokenCheck => jwtToken =>', jwtToken);
       if (!jwtToken) {
         if (!jwtCookie) {
-          console.log(
-            'cbTokenCheck => !jwtCookie | !jwtToken',
-            jwtCookie,
-            jwtToken,
-          );
           throw new Error('Ошибка, нет токена');
         }
       }
@@ -254,7 +242,7 @@ function App() {
         navigate('/');
       }
     } catch (err) {
-      console.log(err.message);
+      console.log('cbTokenCheck => err', err);
       setLoggedIn(false);
     } finally {
       setLoading(false);
@@ -271,12 +259,12 @@ function App() {
     api
       .getSignout()
       .then((res) => {
-        console.log('getSignout => res', res);
+        console.log('cbLogOut => res', res);
         localStorage.removeItem('jwt');
         setLoggedIn(false);
       })
       .catch((err) => {
-        console.log('cbLogOut => auth.getSignout => err', err);
+        console.log('cbLogOut => err', err);
         openInfoTooltip(err);
       })
       .finally(() => {

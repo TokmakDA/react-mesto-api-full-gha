@@ -189,20 +189,6 @@ function App() {
       .finally(() => setLoading(false));
   }
 
-  // // Получение списка карточек
-  // const initialCards = useCallback(async () => {
-  //   setLoading(true);
-  //   try {
-  //     const allCards = await api.getInitialCards();
-  //     if (allCards.data) {
-  //       setCurrentCards(allCards.data);
-  //     }
-  //   } catch (err) {
-  //     console.log(err.message);
-  //     setLoggedIn(false);
-  //   }
-  // }, [currentCards]);
-
   // Авторизация
   const cbLogin = ({ email, password }) => {
     setLoading(true);
@@ -211,11 +197,6 @@ function App() {
       .then((res) => {
         // Ловим Токен
         res.token && localStorage.setItem('jwt', res.token);
-        console.log(
-          'cbLogin => authorize, Cocokies.get()',
-          Cookies.get(),
-          res.token,
-        );
         navigate('/');
         setLoggedIn(true);
       })
@@ -253,12 +234,8 @@ function App() {
       setLoading(true);
       const jwtToken = localStorage.getItem('jwt');
       const jwtCookie = Cookies.get('jwt');
-      console.log(
-        'cbTokenCheck => jwtCookie =>',
-        jwtCookie,
-        'jwtToken =>',
-        jwtToken,
-      );
+      console.log('cbTokenCheck => jwtCookie =>', jwtCookie);
+      console.log('cbTokenCheck => jwtToken =>', jwtToken);
       if (!jwtToken) {
         if (!jwtCookie) {
           console.log(
@@ -295,7 +272,6 @@ function App() {
       .getSignout()
       .then((res) => {
         console.log('getSignout => res', res);
-        Cookies.remove();
         localStorage.removeItem('jwt');
         setLoggedIn(false);
       })

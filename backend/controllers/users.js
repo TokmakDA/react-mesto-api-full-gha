@@ -63,7 +63,7 @@ const login = (req, res, next) => {
           maxAge: 3600000 * 24 * 7,
           httpOnly: false,
           sameSite: 'None',
-          // secure: true,
+          secure: true,
         })
         .status(200)
         .json({
@@ -86,7 +86,7 @@ const signout = (req, res) => {
       maxAge: 3600000 * 24 * 7,
       httpOnly: false,
       sameSite: 'None',
-      // secure: true,
+      secure: true,
     })
     .send({ message: 'Exit' });
 };

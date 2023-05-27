@@ -252,15 +252,22 @@ function App() {
     try {
       setLoading(true);
       const jwtToken = localStorage.getItem('jwt');
-      const jwtCookie = Cookies.get();
-      console.log('cbTokenCheck => jwtCookie, jwtToken', jwtCookie, jwtToken);
-      if (!jwtToken | !jwtCookie) {
-        console.log(
-          'cbTokenCheck => !jwtCookie | !jwtToken',
-          jwtCookie,
-          jwtToken,
-        );
-        throw new Error('Ошибка, нет токена');
+      const jwtCookie = Cookies.get('jwt');
+      console.log(
+        'cbTokenCheck => jwtCookie =>',
+        jwtCookie,
+        'jwtToken =>',
+        jwtToken,
+      );
+      if (!jwtToken) {
+        if (!jwtCookie) {
+          console.log(
+            'cbTokenCheck => !jwtCookie | !jwtToken',
+            jwtCookie,
+            jwtToken,
+          );
+          throw new Error('Ошибка, нет токена');
+        }
       }
       const initialsData = await api.getInitialsData();
       if (initialsData) {
@@ -287,7 +294,7 @@ function App() {
     api
       .getSignout()
       .then((res) => {
-        console.log('cbLogOut => getSignout => res', res);
+        console.log('getSignout => res', res);
         Cookies.remove();
         localStorage.removeItem('jwt');
         setLoggedIn(false);

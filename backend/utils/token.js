@@ -15,16 +15,16 @@ function generateToken(payload) {
   return token;
 }
 
-const checkToken = (token) => {
+const checkToken = async (token) => {
   if (!token) {
     return false;
   }
   try {
-    const payload = jwt.verify(token, JWT_SECRET);
+    const payload = await jwt.verify(token, JWT_SECRET);
     return payload;
   } catch (e) {
     try {
-      const payloadDV = jwt.verify(token, SECRET_KEY_DEV);
+      const payloadDV = await jwt.verify(token, SECRET_KEY_DEV);
       console.log(
         '\x1b[31m%s\x1b[0m',
         `Надо исправить. В продакшне используется тот же

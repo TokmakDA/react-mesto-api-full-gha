@@ -39,7 +39,6 @@ class Api {
 
   _makeRequest(url, method, body) {
     const token = localStorage.getItem('jwt');
-    console.log('_makeRequest', token);
     if (token !== undefined) {
       this._headers['Authorization'] = `${token}`;
     }

@@ -14,7 +14,7 @@ const returnErrorToUser = (err, req, res, next) => {
 };
 
 function handleError(err, req, res, next) {
-  console.log('handleError => err', err.statusCode, err.name);
+  console.log('handleError => err', err.statusCode, err.name, err);
 
   if (err instanceof SomeError) {
     returnErrorToUser(err, req, res, next);

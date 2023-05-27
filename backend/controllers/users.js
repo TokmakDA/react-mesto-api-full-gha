@@ -60,12 +60,12 @@ const login = (req, res, next) => {
       res
         .cookie('jwt', token, {
           maxAge: 3600000 * 24 * 7,
-          httpOnly: true,
-          // sameSite: 'None',
-          // secure: true,
+          httpOnly: false,
+          sameSite: 'None',
+          secure: true,
         })
         .status(200)
-        .json({ token }); // вернем данные
+        .send({ token }); // вернем данные
     })
     .catch(next);
 };
@@ -75,22 +75,16 @@ const signout = (req, res) => {
   res
     .clearCookie('jwt', {
       maxAge: 3600000 * 24 * 7,
-      httpOnly: true,
-      // sameSite: 'None',
-      // secure: true,
+      httpOnly: false,
+      sameSite: 'None',
+      secure: true,
     })
     .send({ message: 'Exit' });
 };
 
 //  POST /signup — создаёт пользователя
 const createUser = (req, res, next) => {
-  const {
-    email,
-    password,
-    name,
-    about,
-    avatar,
-  } = req.body;
+  const { email, password, name, about, avatar } = req.body;
   bcrypt
     .hash(password, 10)
     .then((hash) => {

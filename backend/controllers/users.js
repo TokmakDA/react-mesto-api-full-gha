@@ -65,15 +65,7 @@ const login = (req, res, next) => {
           secure: true,
         })
         .status(200)
-        .json({
-          data: {
-            _id: user._id,
-            name: user.name,
-            about: user.about,
-            avatar: user.avatar,
-            email: user.email,
-          },
-        }); // вернем данные
+        .json({ token }); // вернем данные
     })
     .catch(next);
 };
@@ -92,13 +84,7 @@ const signout = (req, res) => {
 
 //  POST /signup — создаёт пользователя
 const createUser = (req, res, next) => {
-  const {
-    email,
-    password,
-    name,
-    about,
-    avatar,
-  } = req.body;
+  const { email, password, name, about, avatar } = req.body;
   bcrypt
     .hash(password, 10)
     .then((hash) => {

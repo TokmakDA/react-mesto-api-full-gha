@@ -9,16 +9,18 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const routes = require('./routes');
 const { handleError } = require('./errors/errors');
 const corsOptions = require('./utils/corsOptions');
+const bodyParser = require('body-parser');
 
 const app = express();
 const { PORT = 3000 } = process.env;
+
+app.use(bodyParser.json());
 
 mongoose.connect('mongodb://localhost:27017/mestodb').catch((err) => {
   console.log(err);
 });
 
 app.use(cookieParser());
-// app.use(bodyParser.json())
 app.use(express.json());
 app.use(requestLogger); // подключаем логгер запросов
 //  Краш-тест сервера

@@ -209,7 +209,13 @@ function App() {
     api
       .authorize({ email, password })
       .then((res) => {
-        setCurrentUser(res.data);
+        // Ловим Токен
+        res.token && localStorage.setItem('jwt', res.token);
+        console.log(
+          'cbLogin => authorize, Cocokies.get()',
+          Cookies.get(),
+          res.token,
+        );
         navigate('/');
         setLoggedIn(true);
       })
@@ -245,13 +251,16 @@ function App() {
   const cbTokenCheck = useCallback(async () => {
     try {
       setLoading(true);
-      const jwt = Cookies.get();
-      console.log('cbTokenCheck => jwt', jwt);
-
-      if (!jwt) {
-        setLoggedIn(false);
-        console.log('cbTokenCheck => !jwt ');
-        throw new Error('Требуется авторизация');
+      const jwtToken = localStorage.getItem('jwt');
+      const jwtCookie = Cookies.get();
+      console.log('cbTokenCheck => jwtCookie, jwtToken', jwtCookie, jwtToken);
+      if (!jwtToken | !jwtCookie) {
+        console.log(
+          'cbTokenCheck => !jwtCookie | !jwtToken',
+          jwtCookie,
+          jwtToken,
+        );
+        throw new Error('Ошибка, нет токена');
       }
       const initialsData = await api.getInitialsData();
       if (initialsData) {
@@ -279,6 +288,8 @@ function App() {
       .getSignout()
       .then((res) => {
         console.log('cbLogOut => getSignout => res', res);
+        Cookies.remove();
+        localStorage.removeItem('jwt');
         setLoggedIn(false);
       })
       .catch((err) => {

@@ -84,7 +84,13 @@ const signout = (req, res) => {
 
 //  POST /signup — создаёт пользователя
 const createUser = (req, res, next) => {
-  const { email, password, name, about, avatar } = req.body;
+  const {
+    email,
+    password,
+    name,
+    about,
+    avatar,
+  } = req.body;
   bcrypt
     .hash(password, 10)
     .then((hash) => {

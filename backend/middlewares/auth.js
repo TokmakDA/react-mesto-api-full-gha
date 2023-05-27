@@ -11,11 +11,15 @@ module.exports = (req, res, next) => {
     next(newErr);
     return;
   }
-  // проверяем JWT
+  // проверяем
   try {
-    const payload = checkToken(jwtCokie || jwtToken);
-    req.user = { _id: payload._id };
-
+    if (jwtCokie) {
+      const payload = checkToken(jwtCokie);
+      req.user = { _id: payload._id };
+    } else if (jwtToken) {
+      const payload = checkToken(jwtToken);
+      req.user = { _id: payload._id };
+    }
   } catch (err) {
     next(newErr);
   }

@@ -12,7 +12,7 @@ module.exports = async (req, res, next) => {
       const payload = await checkToken(jwtCokie);
       console.log('auth => jwtCokie;', payload);
       req.user = { _id: payload._id };
-    } else if (jwtToken !== 'null') {
+    } else if (jwtToken) {
       const payload = await checkToken(jwtToken);
       console.log('auth => jwtToken;', payload);
       req.user = { _id: payload._id };

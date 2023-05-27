@@ -60,9 +60,9 @@ const login = (req, res, next) => {
       res
         .cookie('jwt', token, {
           maxAge: 3600000 * 24 * 7,
-          httpOnly: false,
-          sameSite: 'None',
-          secure: true,
+          httpOnly: true,
+          // sameSite: 'None',
+          // secure: true,
         })
         .status(200)
         .json({ token }); // вернем данные
@@ -75,9 +75,9 @@ const signout = (req, res) => {
   res
     .clearCookie('jwt', {
       maxAge: 3600000 * 24 * 7,
-      httpOnly: false,
-      sameSite: 'None',
-      secure: true,
+      httpOnly: true,
+      // sameSite: 'None',
+      // secure: true,
     })
     .send({ message: 'Exit' });
 };

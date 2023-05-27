@@ -5,11 +5,11 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
+const bodyParser = require('body-parser');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const routes = require('./routes');
 const { handleError } = require('./errors/errors');
 const corsOptions = require('./utils/corsOptions');
-const bodyParser = require('body-parser');
 
 const app = express();
 const { PORT = 3000 } = process.env;

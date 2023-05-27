@@ -8,10 +8,10 @@ module.exports = async (req, res, next) => {
   const newErr = new UnauthorizedError('Ошибка входа в систему');
 
   // убеждаемся, что токен присутсвует
-  if (!token) {
-    next(newErr);
-    return;
-  }
+  // if (!token) {
+  //   next(newErr);
+  //   return;
+  // }
 
   // проверяем
   try {

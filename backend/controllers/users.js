@@ -52,7 +52,6 @@ const getUserMe = (req, res, next) => {
 //  POST /signin — авторизует пользователя
 const login = (req, res, next) => {
   const { email, password } = req.body;
-
   User.findUserByCredentials(email, password)
     .then((user) => {
       const { _id } = user;

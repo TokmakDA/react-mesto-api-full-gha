@@ -47,17 +47,21 @@ function App() {
 
   const navigate = useNavigate();
 
-  // Показать ошибку
-  const showError = (err) => {
-    console.log('showError => err', err);
-    setErrMessage(err.message);
-    setInfoTooltip(false);
+  // Информационное окно
+  const openInfoTooltip = (err) => {
     setInfoTooltipOpen(true);
+    if (err) {
+      console.log('showError => err', err);
+      setErrMessage(err.message);
+      setInfoTooltip(false);
+    } else {
+      setInfoTooltip(true);
+    }
   };
 
-  // Закрыть показ ошибки
-  const closeErrorDisplay = useCallback(() => {
-    console.log('closeErrorDisplay => err');
+  // Закрыть Информационное окно
+  const closeInfoTooltip = useCallback(() => {
+    console.log('closeInfoTooltip => err');
     setTimeout(() => setErrMessage(null), 1000);
     setInfoTooltipOpen(false);
   }, []);
@@ -95,7 +99,6 @@ function App() {
     setAddPlacePopupOpen(false);
     closseImagepopup();
     setCardDeletePopupOpen(false);
-    // closeErrorDisplay();
   }, []);
 
   // сохраняем введенные данные пользователя в Api
@@ -112,7 +115,7 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
-        showError(err);
+        openInfoTooltip(err);
       })
       .finally(() => setLoading(false));
   }
@@ -129,7 +132,7 @@ function App() {
       .then(() => closeAllPopups())
       .catch((err) => {
         console.log(err);
-        showError(err);
+        openInfoTooltip(err);
       })
       .finally(() => setLoading(false));
   }
@@ -145,7 +148,7 @@ function App() {
       .then(() => closeAllPopups())
       .catch((err) => {
         console.log(err);
-        showError(err);
+        openInfoTooltip(err);
       })
       .finally(() => setLoading(false));
   }
@@ -183,10 +186,23 @@ function App() {
       .then(() => closeAllPopups())
       .catch((err) => {
         console.log(err);
-        showError(err);
+        openInfoTooltip(err);
       })
       .finally(() => setLoading(false));
   }
+
+  const initialCards = async () => {
+    setLoading(true);
+    try {
+      const allCards = await api.getInitialCards();
+      if (allCards.data) {
+        setCurrentCards(allCards.data);
+      }
+    } catch (err) {
+      console.log(err.message);
+      setLoggedIn(false);
+    }
+  };
 
   const cbTokenCheck = useCallback(async () => {
     try {
@@ -196,7 +212,7 @@ function App() {
 
       if (!jwt) {
         setLoggedIn(false);
-        console.log('cbTokenCheck => try => !jwt ');
+        console.log('cbTokenCheck => !jwt ');
         throw new Error('Требуется авторизация');
       }
       const initialsData = await api.getInitialsData();
@@ -208,7 +224,7 @@ function App() {
       }
     } catch (err) {
       console.log(err.message);
-      // showError(err);
+      // openInfoTooltip(err);
       setLoggedIn(false);
     } finally {
       setLoading(false);
@@ -225,27 +241,18 @@ function App() {
     api
       .authorize({ email, password })
       .then((res) => {
-        // console.log('cbLogin => auth.authorize => res.data', res.data);
+        console.log('cbLogin => auth.authorize => document.cookie', document.cookie);
         setCurrentUser(res.data);
-
-        console.log(
-          'cbLogin => auth.authorize => Cookies.get(jwt)',
-          Cookies.get(),
-        );
         cbTokenCheck();
         navigate('/');
-        // setLoggedIn(true);
+        setLoggedIn(true);
       })
       .catch((err) => {
         console.log('cbLogin => auth.authorize => err', err);
-        // setInfoTooltipOpen(true);
-        // setErrMessage(err.message);
-        // setInfoTooltip(false);
-        showError(err);
+        openInfoTooltip(err);
       })
       .finally(() => {
         setLoading(false);
-        setLoggedIn(true);
       });
   };
 
@@ -257,18 +264,14 @@ function App() {
     api
       .register({ email, password })
       .then((res) => {
-        console.log('cbRegister => auth.register => res', res);
-        console.log('cbRegister => auth.register => res.data', res?.data);
-        setInfoTooltip(true);
+        navigate('/sign-in');
+        openInfoTooltip();
       })
       .catch((err) => {
         console.log('cbRegister => auth.register => err', err);
-        // setErrMessage(err.message);
-        // setInfoTooltip(false);
-        showError(err);
+        openInfoTooltip(err);
       })
       .finally(() => {
-        setInfoTooltipOpen(true);
         setLoading(false);
       });
   };
@@ -278,21 +281,16 @@ function App() {
     console.log('cbLogOut => getSignout =>');
 
     setLoading(true);
-    // localStorage.removeItem('jwt');
     api
       .getSignout()
       .then((res) => {
-        console.log('cbLogOut => auth.getSignout => res', res);
-        console.log(
-          'cbLogOut => getSignout => Cookies.get(jwt)',
-          Cookies.get('jwt'),
-        );
+        console.log('cbLogOut => getSignout => res', res);
         setLoggedIn(false);
+        initialCards();
       })
       .catch((err) => {
         console.log('cbLogOut => auth.getSignout => err', err);
-        // setInfoTooltip(false);
-        showError(err);
+        openInfoTooltip(err);
       })
       .finally(() => {
         setLoading(false);
@@ -383,7 +381,7 @@ function App() {
 
       <InfoTooltip
         isOpen={isInfoTooltipOpen}
-        onClose={closeErrorDisplay}
+        onClose={closeInfoTooltip}
         isInfoTooltip={isInfoTooltip}
         errMessage={errMessage}
       />

@@ -13,7 +13,7 @@ module.exports = async (req, res, next) => {
       console.log('auth => jwtCokie;', payload);
       req.user = { _id: payload._id };
     } else if (jwtToken !== 'null') {
-      const payload = checkToken(jwtToken);
+      const payload = await checkToken(jwtToken);
       console.log('auth => jwtToken;', payload);
       req.user = { _id: payload._id };
     } else {

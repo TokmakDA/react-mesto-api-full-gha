@@ -10,7 +10,6 @@ module.exports = async (req, res, next) => {
     next(newErr);
     return;
   }
-
   // проверяем
   try {
     req.user = await checkToken(token.jwt);
@@ -20,6 +19,7 @@ module.exports = async (req, res, next) => {
     } catch (err) {
       next(newErr);
     }
+    next(newErr);
   }
   next(); // пропускаем запрос дальше
 };

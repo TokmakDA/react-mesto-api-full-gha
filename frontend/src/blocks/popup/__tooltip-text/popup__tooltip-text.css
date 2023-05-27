@@ -9,6 +9,8 @@
   padding: 0;
   text-overflow: ellipsis;
   overflow: hidden;
+  max-width: 358px;
+  overflow-wrap: break-word;
 }
 
 @media screen and (max-width: 720px) {

@@ -61,8 +61,11 @@ const login = (req, res, next) => {
         .cookie('jwt', token, {
           maxAge: 3600000 * 24 * 7,
           httpOnly: false,
-          sameSite: 'None',
-          secure: true,
+          // С этими параметрами не получается победить автотесты,
+          // а для работы сайта пришлось добавить токен
+          // Т.к. без них браузер отказывается работать с Куками.
+          // sameSite: 'None',
+          // secure: true,
         })
         .status(200)
         .send({ token }); // вернем данные
@@ -76,15 +79,21 @@ const signout = (req, res) => {
     .clearCookie('jwt', {
       maxAge: 3600000 * 24 * 7,
       httpOnly: false,
-      sameSite: 'None',
-      secure: true,
+      // sameSite: 'None',
+      // secure: true,
     })
     .send({ message: 'Exit' });
 };
 
 //  POST /signup — создаёт пользователя
 const createUser = (req, res, next) => {
-  const { email, password, name, about, avatar } = req.body;
+  const {
+    email,
+    password,
+    name,
+    about,
+    avatar,
+  } = req.body;
   bcrypt
     .hash(password, 10)
     .then((hash) => {

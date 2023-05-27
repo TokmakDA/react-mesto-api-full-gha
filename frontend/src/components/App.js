@@ -155,8 +155,6 @@ function App() {
 
   // обработчик лайков и дизлайков
   function handleCardLike(card) {
-    console.log('handleCardLike => ');
-
     // Снова проверяем, есть ли уже лайк на этой карточке
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
     // Отправляем запрос в API и получаем обновлённые данные карточки
@@ -191,49 +189,19 @@ function App() {
       .finally(() => setLoading(false));
   }
 
-  const initialCards = async () => {
-    setLoading(true);
-    try {
-      const allCards = await api.getInitialCards();
-      if (allCards.data) {
-        setCurrentCards(allCards.data);
-      }
-    } catch (err) {
-      console.log(err.message);
-      setLoggedIn(false);
-    }
-  };
-
-  const cbTokenCheck = useCallback(async () => {
-    try {
-      setLoading(true);
-      const jwt = Cookies.get();
-      console.log('cbTokenCheck => jwt', jwt);
-
-      if (!jwt) {
-        setLoggedIn(false);
-        console.log('cbTokenCheck => !jwt ');
-        throw new Error('Требуется авторизация');
-      }
-      const initialsData = await api.getInitialsData();
-      if (initialsData) {
-        setCurrentUser(initialsData[0].data);
-        setCurrentCards(initialsData[1].data);
-        setLoggedIn(true);
-        navigate('/');
-      }
-    } catch (err) {
-      console.log(err.message);
-      // openInfoTooltip(err);
-      setLoggedIn(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [navigate]);
-
-  useEffect(() => {
-    cbTokenCheck();
-  }, [cbTokenCheck]);
+  // // Получение списка карточек
+  // const initialCards = useCallback(async () => {
+  //   setLoading(true);
+  //   try {
+  //     const allCards = await api.getInitialCards();
+  //     if (allCards.data) {
+  //       setCurrentCards(allCards.data);
+  //     }
+  //   } catch (err) {
+  //     console.log(err.message);
+  //     setLoggedIn(false);
+  //   }
+  // }, [currentCards]);
 
   // Авторизация
   const cbLogin = ({ email, password }) => {
@@ -241,9 +209,7 @@ function App() {
     api
       .authorize({ email, password })
       .then((res) => {
-        console.log('cbLogin => auth.authorize => document.cookie', document.cookie);
         setCurrentUser(res.data);
-        cbTokenCheck();
         navigate('/');
         setLoggedIn(true);
       })
@@ -276,17 +242,44 @@ function App() {
       });
   };
 
+  const cbTokenCheck = useCallback(async () => {
+    try {
+      setLoading(true);
+      const jwt = Cookies.get();
+      console.log('cbTokenCheck => jwt', jwt);
+
+      if (!jwt) {
+        setLoggedIn(false);
+        console.log('cbTokenCheck => !jwt ');
+        throw new Error('Требуется авторизация');
+      }
+      const initialsData = await api.getInitialsData();
+      if (initialsData) {
+        setCurrentUser(initialsData[0].data);
+        setCurrentCards(initialsData[1].data);
+        setLoggedIn(true);
+        navigate('/');
+      }
+    } catch (err) {
+      console.log(err.message);
+      setLoggedIn(false);
+    } finally {
+      setLoading(false);
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    cbTokenCheck();
+  }, [cbTokenCheck]);
+
   // Выход
   const cbLogOut = () => {
-    console.log('cbLogOut => getSignout =>');
-
     setLoading(true);
     api
       .getSignout()
       .then((res) => {
         console.log('cbLogOut => getSignout => res', res);
         setLoggedIn(false);
-        initialCards();
       })
       .catch((err) => {
         console.log('cbLogOut => auth.getSignout => err', err);
@@ -300,7 +293,10 @@ function App() {
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <Header logOut={cbLogOut} isLoggedIn={isLoggedIn} />
+      <Header
+        logOut={cbLogOut}
+        isLoggedIn={isLoggedIn}
+      />
       <Routes>
         <Route
           index

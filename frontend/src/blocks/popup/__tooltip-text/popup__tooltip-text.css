@@ -7,11 +7,14 @@
   color: #000;
   margin: 0;
   padding: 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 @media screen and (max-width: 720px) {
   .popup__tooltip-text {
     font-size: 20px;
     line-height: 24px;
+    max-width: 238px;
   }
 }

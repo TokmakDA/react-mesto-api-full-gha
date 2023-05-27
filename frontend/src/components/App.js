@@ -100,8 +100,6 @@ function App() {
 
   // сохраняем введенные данные пользователя в Api
   function handleUpdateUser(dataUser) {
-    console.log('handleUpdateUser => patchUserInfo');
-
     setLoading(true);
     api
       .patchUserInfo(dataUser)
@@ -121,8 +119,6 @@ function App() {
 
   // сохраняем новый аватар пользователя в Api
   function handleUpdateAvatar(linkAvatar) {
-    console.log('handleUpdateAvatar => patchUserAvatar');
-
     setLoading(true);
     api
       .patchUserAvatar(linkAvatar)
@@ -140,8 +136,6 @@ function App() {
 
   // добавляем новую карточку
   function handleAddPlaceSubmit(dataCard) {
-    console.log('handleAddPlaceSubmit => postNewCard');
-
     setLoading(true);
     api
       .postNewCard(dataCard)
@@ -179,8 +173,6 @@ function App() {
 
   // обработчик удаления карточки
   function handleCardDeleteSubmit(card) {
-    console.log('handleCardDeleteSubmit => deleteCard');
-
     setLoading(true);
     api
       .deleteCard(card._id)
@@ -229,8 +221,6 @@ function App() {
 
   // Авторизация
   const cbLogin = ({ email, password }) => {
-    console.log('cbLogin => authorize =>');
-
     setLoading(true);
     api
       .authorize({ email, password })

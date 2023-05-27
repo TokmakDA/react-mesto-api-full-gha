@@ -23,7 +23,7 @@ function Card({ card, onCardClick, onCardLike, onCardDelete }) {
   }
   return (
     <li className="card">
-      {isOwn && (
+      {!isOwn && (
         <button
           className="card__trash"
           type="button"

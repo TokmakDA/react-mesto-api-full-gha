@@ -35,34 +35,36 @@ const deleteCard = (req, res, next) => {
     })
     .then((card) => {
       if (card.owner._id.toString() === req.user._id.toString()) {
-        Card.findByIdAndRemove(cardId)
-          .orFail(() => {
-            throw new NotFoundError(`Карточка ${cardId} не найдена`);
-          })
-          .then(() => {
-            res.json({
-              message: `Карточка с id: ${cardId} успешно удалена`,
-            });
+        console.log('deleteCard => card =   return card.deleteOne()');
+        return card.deleteOne().then(() => {
+          res.json({
+            message: `Карточка с id: ${cardId} успешно удалена`,
           });
-        return;
+        });
       }
-      throw new ForbiddenError(`Вы не являетесь владельцем карточки id: ${cardId}`);
+      throw new ForbiddenError(
+        `Вы не являетесь владельцем карточки id: ${cardId}`,
+      );
     })
     .catch(next);
+};
+
+// Внести изменения в данных пользователя из базы по ID
+const setFindByIdAndUpdate = (id, update) => {
+  return Card.findByIdAndUpdate(id, update, {
+    new: true,
+  })
+    .populate(['owner', 'likes'])
+    .orFail(() => {
+      throw new NotFoundError(`Карточка ${id} не найдена`);
+    });
 };
 
 //  PUT /cards/:cardId/likes — поставить лайк карточке
 const addLikeCard = (req, res, next) => {
   const { cardId } = req.params;
-  Card.findByIdAndUpdate(
-    cardId,
-    { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-    { new: true },
-  )
-    .populate(['owner', 'likes'])
-    .orFail(() => {
-      throw new NotFoundError(`Карточка ${cardId} не найдена`);
-    })
+  // добавить _id в массив, если его там нет
+  setFindByIdAndUpdate(cardId, { $addToSet: { likes: req.user._id } })
     .then((card) => {
       res.json({ data: card });
     })
@@ -72,16 +74,8 @@ const addLikeCard = (req, res, next) => {
 //  DELETE /cards/:cardId/likes — убрать лайк с карточки
 const deleteLikeCard = (req, res, next) => {
   const { cardId } = req.params;
-
-  Card.findByIdAndUpdate(
-    cardId,
-    { $pull: { likes: req.user._id } }, // убрать _id из массива
-    { new: true },
-  )
-    .populate(['owner', 'likes'])
-    .orFail(() => {
-      throw new NotFoundError(`Карточка ${cardId} не найдена`);
-    })
+  // убрать _id из массива
+  setFindByIdAndUpdate(cardId, { $pull: { likes: req.user._id } })
     .then((card) => {
       res.json({ data: card });
     })

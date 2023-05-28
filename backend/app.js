@@ -6,7 +6,10 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const bodyParser = require('body-parser');
-const { requestLogger, errorLogger } = require('./middlewares/logger');
+const {
+  requestLogger,
+  errorLogger,
+} = require('./middlewares/logger');
 const routes = require('./routes');
 const { handleError } = require('./errors/errors');
 const corsOptions = require('./utils/corsOptions');
@@ -14,11 +17,11 @@ const corsOptions = require('./utils/corsOptions');
 const app = express();
 const { PORT = 3000 } = process.env;
 
-app.use(bodyParser.json());
-
-mongoose.connect('mongodb://localhost:27017/mestodb').catch((err) => {
-  console.log(err);
-});
+mongoose
+  .connect('mongodb://localhost:27017/mestodb')
+  .catch((err) => {
+    console.log(err);
+  });
 
 app.use(cookieParser());
 app.use(express.json());

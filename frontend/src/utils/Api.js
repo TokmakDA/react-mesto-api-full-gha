@@ -127,7 +127,6 @@ const config = {
   baseUrl: 'http://localhost:3000',
   credentials: 'include',
   headers: {
-    Accept: 'application/json',
     'Content-Type': 'application/json',
   },
 };

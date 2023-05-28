@@ -3,7 +3,7 @@ const { celebrate } = require('celebrate');
 const {
   userSchemaUpdate,
   userSchemaUpdateAvatat,
-  idSchema,
+  userIdSchema,
 } = require('../utils/validationSchemes');
 const {
   getUsers,
@@ -22,7 +22,7 @@ userRouter.get('/', getUsers);
 userRouter.get('/me', getUserMe);
 
 //  GET /users/:userId - возвращает пользователя по _id
-userRouter.get('/:userId/', celebrate(idSchema), getUser);
+userRouter.get('/:userId/', celebrate(userIdSchema), getUser);
 
 //  PATCH /users/me — обновляет профиль
 userRouter.patch('/me', celebrate(userSchemaUpdate), patchUser);

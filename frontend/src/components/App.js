@@ -22,12 +22,17 @@ import Loading from './Loading';
 
 function App() {
   // Стейты состояния открытия попапов
-  const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
-  const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
-  const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
+  const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] =
+    useState(false);
+  const [isEditProfilePopupOpen, setEditProfilePopupOpen] =
+    useState(false);
+  const [isAddPlacePopupOpen, setAddPlacePopupOpen] =
+    useState(false);
   const [isImagePopupOpen, setImagePopupOpen] = useState(false);
-  const [isCardDeletePopupOpen, setCardDeletePopupOpen] = useState(false);
-  const [isInfoTooltipOpen, setInfoTooltipOpen] = useState(false);
+  const [isCardDeletePopupOpen, setCardDeletePopupOpen] =
+    useState(false);
+  const [isInfoTooltipOpen, setInfoTooltipOpen] =
+    useState(false);
 
   // Стейт результат обработки api Auth: OK=true, error=false
   const [isInfoTooltip, setInfoTooltip] = useState(false);
@@ -156,12 +161,19 @@ function App() {
   // обработчик лайков и дизлайков
   function handleCardLike(card) {
     // Снова проверяем, есть ли уже лайк на этой карточке
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    const isLiked = card.likes.some(
+      (i) => i._id === currentUser._id,
+    );
     // Отправляем запрос в API и получаем обновлённые данные карточки
-    (!isLiked ? api.addLikeCard(card._id) : api.deleteLikeCard(card._id))
+    (!isLiked
+      ? api.addLikeCard(card._id)
+      : api.deleteLikeCard(card._id)
+    )
       .then((newCard) => {
         setCurrentCards((state) =>
-          state.map((c) => (c._id === card._id ? newCard.data : c)),
+          state.map((c) =>
+            c._id === card._id ? newCard.data : c,
+          ),
         );
       })
       .catch((err) => console.log('handleCardLike => err', err));
@@ -173,7 +185,9 @@ function App() {
     api
       .deleteCard(card._id)
       .then((res) => {
-        setCurrentCards((state) => state.filter((c) => c._id !== card._id));
+        setCurrentCards((state) =>
+          state.filter((c) => c._id !== card._id),
+        );
         console.log(res.message);
       })
       .then(() => closeAllPopups())
@@ -227,13 +241,11 @@ function App() {
   const cbTokenCheck = useCallback(async () => {
     try {
       setLoading(true);
-      const jwtToken = localStorage.getItem('jwt');
-      const jwtCookie = Cookies.get('jwt');
-      if (!jwtToken) {
-        if (!jwtCookie) {
-          throw new Error('Ошибка, нет токена');
-        }
+      const jwtCookie = Cookies.get();
+      if (!jwtCookie) {
+        throw new Error('Ошибка, нет токена');
       }
+
       const initialsData = await api.getInitialsData();
       if (initialsData) {
         setCurrentUser(initialsData[0].data);
@@ -260,7 +272,7 @@ function App() {
       .getSignout()
       .then((res) => {
         console.log('cbLogOut => res', res);
-        localStorage.removeItem('jwt');
+        Cookies.remove('jwt');
         setLoggedIn(false);
       })
       .catch((err) => {
@@ -292,7 +304,9 @@ function App() {
                 onAddPlace={() => handleAddPlaceClick()}
                 onCardClick={handleCardClick}
                 onCardLike={(card) => handleCardLike(card)}
-                onCardDelete={(card) => handleCardDeleteClick(card)}
+                onCardDelete={(card) =>
+                  handleCardDeleteClick(card)
+                }
               />
               <Footer />
             </ProtectedRoute>
@@ -325,7 +339,9 @@ function App() {
       <EditAvatarPopup
         isOpen={isEditAvatarPopupOpen}
         onClose={closeAllPopups}
-        onUpdateAvatar={(dataUser) => handleUpdateAvatar(dataUser)}
+        onUpdateAvatar={(dataUser) =>
+          handleUpdateAvatar(dataUser)
+        }
         isLoading={isLoading}
       />
 
@@ -339,7 +355,9 @@ function App() {
       <AddPlacePopup
         isOpen={isAddPlacePopupOpen}
         onClose={closeAllPopups}
-        onAddPlace={(dataNewCard) => handleAddPlaceSubmit(dataNewCard)}
+        onAddPlace={(dataNewCard) =>
+          handleAddPlaceSubmit(dataNewCard)
+        }
         isLoading={isLoading}
       />
 

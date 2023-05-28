@@ -3,23 +3,23 @@ const { checkToken } = require('../utils/token');
 
 module.exports = (req, res, next) => {
   const newErr = new UnauthorizedError('Ошибка входа в систему');
-
   try {
     const jwtCokie = req.cookies.jwt;
-
     if (!jwtCokie) {
-      console.log('auth => !jwtToken and jwtCokie!;');
+      console.log('auth => !jwtCokie!');
       next(newErr);
+      return;
     }
     const payload = checkToken(jwtCokie);
-    console.log('auth => jwtCokie;', payload);
+    console.log('auth => jwtCokie => checkToken;', payload);
     if (!payload) {
       console.log('auth => !payload');
       next(newErr);
+      return;
     }
     req.user = { _id: payload._id };
   } catch (err) {
-    console.log('auth => try cath err;');
+    console.log('auth => try cath err');
     next(newErr);
   }
   next(); // пропускаем запрос дальше

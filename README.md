@@ -12,4 +12,4 @@ IP 84.252.142.173
 
 Frontend https://tokmak-da.mesto.nomoredomains.monster
 
-Backend https://https://api.tokmak-da.mesto.nomoredomains.rocks
+Backend https://api.tokmak-da.mesto.nomoredomains.rocks

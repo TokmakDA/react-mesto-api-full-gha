@@ -3,9 +3,10 @@ const { checkToken } = require('../utils/token');
 
 module.exports = (req, res, next) => {
   const newErr = new UnauthorizedError('Ошибка входа в систему');
-  const jwtCokie = req.cookies;
-  console.log('auth до try', jwtCokie);
+  // const jwtCokie = req.cookies;
+  // console.log('auth до try', jwtCokie);
   try {
+    const jwtCokie = req.cookies.jwt;
     if (!jwtCokie) {
       console.log('auth => !jwtCokie!');
       next(newErr);

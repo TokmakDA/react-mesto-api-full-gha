@@ -1,25 +1,23 @@
 const { UnauthorizedError } = require('../errors/errors');
 const { checkToken } = require('../utils/token');
 
-module.exports = async (req, res, next) => {
+module.exports = (req, res, next) => {
   const newErr = new UnauthorizedError('Ошибка входа в систему');
 
   try {
-    const jwtCokie = await req.cookies.jwt;
-    const jwtToken = await req.headers.authorization;
+    const jwtCokie = req.cookies.jwt;
 
-    if (jwtCokie) {
-      const payload = await checkToken(jwtCokie);
-      console.log('auth => jwtCokie;', payload);
-      req.user = { _id: payload._id };
-    } else if (jwtToken) {
-      const payload = await checkToken(jwtToken);
-      console.log('auth => jwtToken;', payload);
-      req.user = { _id: payload._id };
-    } else {
+    if (!jwtCokie) {
       console.log('auth => !jwtToken and jwtCokie!;');
       next(newErr);
     }
+    const payload = checkToken(jwtCokie);
+    console.log('auth => jwtCokie;', payload);
+    if (!payload) {
+      console.log('auth => !jwtToken and jwtCokie!;');
+      next(newErr);
+    }
+    req.user = { _id: payload._id };
   } catch (err) {
     console.log('auth => try cath;');
     next(newErr);

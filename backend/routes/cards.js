@@ -1,6 +1,6 @@
 const express = require('express');
 const { celebrate } = require('celebrate');
-const { cardSchema, cardIdSchema } = require('../utils/validationSchemes');
+const { cardSchema, idSchema } = require('../utils/validationSchemes');
 const {
   getCards,
   createCard,
@@ -18,12 +18,12 @@ cardRouter.get('/', getCards);
 cardRouter.post('/', celebrate(cardSchema), createCard);
 
 //  DELETE /cards/:cardId — удаляет карточку по идентификатору
-cardRouter.delete('/:cardId', celebrate(cardIdSchema), deleteCard);
+cardRouter.delete('/:cardId', celebrate(idSchema), deleteCard);
 
 //  PUT /cards/:cardId/likes — поставить лайк карточке
-cardRouter.put('/:cardId/likes', celebrate(cardIdSchema), addLikeCard);
+cardRouter.put('/:cardId/likes', celebrate(idSchema), addLikeCard);
 
 //  DELETE /cards/:cardId/likes — убрать лайк с карточки
-cardRouter.delete('/:cardId/likes', celebrate(cardIdSchema), deleteLikeCard);
+cardRouter.delete('/:cardId/likes', celebrate(idSchema), deleteLikeCard);
 
 module.exports = { cardRouter };

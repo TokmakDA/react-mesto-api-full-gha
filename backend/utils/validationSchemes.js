@@ -4,6 +4,7 @@ const userConfig = {
   name: Joi.string()
     .min(2)
     .max(30)
+    .required()
     .label('Имя')
     .messages({
       'string.empty': 'Поле {#label} не может быть пустым',
@@ -15,6 +16,7 @@ const userConfig = {
   about: Joi.string()
     .min(2)
     .max(30)
+    .required()
     .label('О себе')
     .messages({
       'string.empty': 'Поле {#label} не может быть пустым',
@@ -25,6 +27,7 @@ const userConfig = {
     }),
   avatar: Joi.string()
     .regex(/(https?:\/\/)\w+?(\S+|W+)?(\w+)?.\w{2,15}\/?/)
+    .required()
     .label('Аватар')
     .messages({
       'string.pattern.base':
@@ -55,7 +58,7 @@ const userConfig = {
     }),
 };
 
-const userSchema = {
+const userSchemaCreate = {
   body: Joi.object().keys(userConfig),
 };
 
@@ -70,13 +73,17 @@ const userSchemaUpdate = {
   body: Joi.object().keys({
     name: userConfig.name,
     about: userConfig.about,
+  }),
+};
+const userSchemaUpdateAvatat = {
+  body: Joi.object().keys({
     avatar: userConfig.avatar,
   }),
 };
 
-const userIdSchema = {
+const idSchema = {
   params: Joi.object().keys({
-    userId: Joi.string().alphanum().length(24),
+    userId: Joi.string().hex().length(24).required(),
   }),
 };
 
@@ -88,8 +95,7 @@ const cardSchema = {
       .required()
       .label('Название')
       .messages({
-        'string.empty':
-          'Поле {#label} не может быть пустым',
+        'string.empty': 'Поле {#label} не может быть пустым',
         'string.min':
           'Поле {#label} должно быть не менее {#limit} символов',
         'string.max':
@@ -105,23 +111,16 @@ const cardSchema = {
           'Поле {#label} должно быть ссылкой. Не соответствует требуемому образцу {#regex}',
         'string.base':
           'Поле {#label} должно соответствовать предложенному образцу',
-        'string.empty':
-          'Поле {#label} не может быть пустым',
+        'string.empty': 'Поле {#label} не может быть пустым',
       }),
   }),
 };
 
-const cardIdSchema = {
-  params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24),
-  }),
-};
-
 module.exports = {
-  userSchema,
+  userSchemaCreate,
   userSchemaLogin,
   userSchemaUpdate,
-  userIdSchema,
+  userSchemaUpdateAvatat,
   cardSchema,
-  cardIdSchema,
+  idSchema,
 };

@@ -1,6 +1,10 @@
 const express = require('express');
 const { celebrate } = require('celebrate');
-const { userSchemaUpdate, userIdSchema } = require('../utils/validationSchemes');
+const {
+  userSchemaUpdate,
+  userSchemaUpdateAvatat,
+  idSchema,
+} = require('../utils/validationSchemes');
 const {
   getUsers,
   getUser,
@@ -18,12 +22,16 @@ userRouter.get('/', getUsers);
 userRouter.get('/me', getUserMe);
 
 //  GET /users/:userId - возвращает пользователя по _id
-userRouter.get('/:userId/', celebrate(userIdSchema), getUser);
+userRouter.get('/:userId/', celebrate(idSchema), getUser);
 
 //  PATCH /users/me — обновляет профиль
 userRouter.patch('/me', celebrate(userSchemaUpdate), patchUser);
 
 //  PATCH /users/me/avatar — обновляет аватар
-userRouter.patch('/me/avatar', celebrate(userSchemaUpdate), patchAvatar);
+userRouter.patch(
+  '/me/avatar',
+  celebrate(userSchemaUpdateAvatat),
+  patchAvatar,
+);
 
 module.exports = { userRouter };

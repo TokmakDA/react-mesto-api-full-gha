@@ -51,6 +51,7 @@ const deleteCard = (req, res, next) => {
 
 // Внести изменения в данных пользователя из базы по ID
 const setFindByIdAndUpdate = (id, update) => {
+  console.log('setFindByIdAndUpdate = id, data', id, update); //    ТЕСТ
   return Card.findByIdAndUpdate(id, update, {
     new: true,
   })

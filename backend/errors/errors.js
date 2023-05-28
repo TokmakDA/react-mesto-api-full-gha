@@ -1,3 +1,5 @@
+const { CelebrateError } = require('celebrate');
+const { MongooseError, default: mongoose } = require('mongoose');
 const { BadRequestError } = require('./BadRequestError');
 const { ConflictError } = require('./ConflictError');
 const { DefaltError } = require('./DefaltError');
@@ -22,16 +24,15 @@ function handleError(err, req, res, next) {
     const newErr = new BadRequestError('Некорректный ID.');
     returnErrorToUser(newErr, req, res, next);
   } else if (err instanceof CelebrateError) {
-    err.message = err.validation.body.message || err.validation.params.message;
     // Ошибки перехваченные от celebrate
     next(err);
   } else if (err instanceof mongoose.Error.ValidationError) {
-    const message = Object.values(err.errors)
-      .map((error) => error.message)
-      .join('; ');
-    const newErr = new BadRequestError(message);
+    const newErr = new BadRequestError(err.message);
     returnErrorToUser(newErr, req, res, next);
   } else if (err instanceof MongooseError) {
+    // const message = Object.values(err.errors)
+    //   .map((error) => error.message)
+    //   .join('; ');
     const newErr = new BadRequestError(err.message);
     returnErrorToUser(newErr, req, res, next);
   } else {

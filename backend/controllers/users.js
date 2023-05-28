@@ -21,13 +21,19 @@ const setFindByIdAndUpdate = (id, data) => {
     new: true,
     runValidators: true,
   }).orFail(() => {
-    throw new NotFoundError(`Пользователь ${userId} не найден`);
+    throw new NotFoundError(`Пользователь ${id} не найден`);
   });
 };
 
 //  POST /signup — создаёт пользователя
 const createUser = (req, res, next) => {
-  const { email, password, name, about, avatar } = req.body;
+  const {
+    email,
+    password,
+    name,
+    about,
+    avatar,
+  } = req.body;
   bcrypt
     .hash(password, 10)
     .then((hash) => {

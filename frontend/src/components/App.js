@@ -22,17 +22,12 @@ import Loading from './Loading';
 
 function App() {
   // Стейты состояния открытия попапов
-  const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] =
-    useState(false);
-  const [isEditProfilePopupOpen, setEditProfilePopupOpen] =
-    useState(false);
-  const [isAddPlacePopupOpen, setAddPlacePopupOpen] =
-    useState(false);
+  const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
+  const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
   const [isImagePopupOpen, setImagePopupOpen] = useState(false);
-  const [isCardDeletePopupOpen, setCardDeletePopupOpen] =
-    useState(false);
-  const [isInfoTooltipOpen, setInfoTooltipOpen] =
-    useState(false);
+  const [isCardDeletePopupOpen, setCardDeletePopupOpen] = useState(false);
+  const [isInfoTooltipOpen, setInfoTooltipOpen] = useState(false);
 
   // Стейт результат обработки api Auth: OK=true, error=false
   const [isInfoTooltip, setInfoTooltip] = useState(false);
@@ -106,6 +101,65 @@ function App() {
     setCardDeletePopupOpen(false);
   }, []);
 
+  const isOpen =
+    isEditAvatarPopupOpen ||
+    isEditProfilePopupOpen ||
+    isAddPlacePopupOpen ||
+    isImagePopupOpen ||
+    isCardDeletePopupOpen ||
+    isInfoTooltipOpen;
+
+  // указываем `useEffect` для обработчика `Escape`
+  useEffect(() => {
+    function handleEscapeKeyClosePopups(e) {
+      if (e.code === 'Escape') {
+        closeAllPopups();
+      }
+    }
+    function handleEscapeKeyCloseTooltip(e) {
+      if (e.code === 'Escape') {
+        closeInfoTooltip();
+      }
+    }
+    if (!isInfoTooltipOpen && !isOpen) return;
+    if (isInfoTooltipOpen) {
+      document.addEventListener('keydown', handleEscapeKeyCloseTooltip);
+      return () =>
+        document.removeEventListener('keydown', handleEscapeKeyCloseTooltip);
+    }
+    if (!isInfoTooltipOpen && isOpen) {
+      document.addEventListener('keydown', handleEscapeKeyClosePopups);
+      return () =>
+        document.removeEventListener('keydown', handleEscapeKeyClosePopups);
+    }
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKeyCloseTooltip);
+      document.removeEventListener('keydown', handleEscapeKeyClosePopups);
+    };
+  }, [isOpen, isInfoTooltipOpen, closeAllPopups, closeInfoTooltip]);
+
+  const getInitial = useCallback(async () => {
+    try {
+      setLoading(true);
+      const initialsData = await api.getInitialsData();
+      if (initialsData) {
+        setCurrentUser(initialsData[0].data);
+        setCurrentCards(initialsData[1].data);
+        setLoggedIn(true);
+        navigate('/');
+      }
+    } catch (err) {
+      console.log('cbTokenCheck => err', err);
+      setLoggedIn(false);
+    } finally {
+      setLoading(false);
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    getInitial();
+  }, [getInitial]);
+
   // сохраняем введенные данные пользователя в Api
   function handleUpdateUser(dataUser) {
     setLoading(true);
@@ -161,19 +215,12 @@ function App() {
   // обработчик лайков и дизлайков
   function handleCardLike(card) {
     // Снова проверяем, есть ли уже лайк на этой карточке
-    const isLiked = card.likes.some(
-      (i) => i._id === currentUser._id,
-    );
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
     // Отправляем запрос в API и получаем обновлённые данные карточки
-    (!isLiked
-      ? api.addLikeCard(card._id)
-      : api.deleteLikeCard(card._id)
-    )
+    (!isLiked ? api.addLikeCard(card._id) : api.deleteLikeCard(card._id))
       .then((newCard) => {
         setCurrentCards((state) =>
-          state.map((c) =>
-            c._id === card._id ? newCard.data : c,
-          ),
+          state.map((c) => (c._id === card._id ? newCard.data : c)),
         );
       })
       .catch((err) => console.log('handleCardLike => err', err));
@@ -185,9 +232,7 @@ function App() {
     api
       .deleteCard(card._id)
       .then((res) => {
-        setCurrentCards((state) =>
-          state.filter((c) => c._id !== card._id),
-        );
+        setCurrentCards((state) => state.filter((c) => c._id !== card._id));
         console.log(res.message);
       })
       .then(() => closeAllPopups())
@@ -204,8 +249,7 @@ function App() {
     api
       .authorize({ email, password })
       .then((res) => {
-        // Ловим Токен
-        res.token && localStorage.setItem('jwt', res.token);
+        setCurrentUser(res.data)
         navigate('/');
         setLoggedIn(true);
       })
@@ -220,8 +264,6 @@ function App() {
 
   // Регистрация
   const cbRegister = ({ email, password }) => {
-    console.log('cbRegister => register =>');
-
     setLoading(true);
     api
       .register({ email, password })
@@ -237,33 +279,6 @@ function App() {
         setLoading(false);
       });
   };
-
-  const cbTokenCheck = useCallback(async () => {
-    try {
-      setLoading(true);
-      const jwtCookie = Cookies.get();
-      if (!jwtCookie) {
-        throw new Error('Ошибка, нет токена');
-      }
-
-      const initialsData = await api.getInitialsData();
-      if (initialsData) {
-        setCurrentUser(initialsData[0].data);
-        setCurrentCards(initialsData[1].data);
-        setLoggedIn(true);
-        navigate('/');
-      }
-    } catch (err) {
-      console.log('cbTokenCheck => err', err);
-      setLoggedIn(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [navigate]);
-
-  useEffect(() => {
-    cbTokenCheck();
-  }, [cbTokenCheck]);
 
   // Выход
   const cbLogOut = () => {
@@ -304,9 +319,7 @@ function App() {
                 onAddPlace={() => handleAddPlaceClick()}
                 onCardClick={handleCardClick}
                 onCardLike={(card) => handleCardLike(card)}
-                onCardDelete={(card) =>
-                  handleCardDeleteClick(card)
-                }
+                onCardDelete={(card) => handleCardDeleteClick(card)}
               />
               <Footer />
             </ProtectedRoute>
@@ -339,9 +352,7 @@ function App() {
       <EditAvatarPopup
         isOpen={isEditAvatarPopupOpen}
         onClose={closeAllPopups}
-        onUpdateAvatar={(dataUser) =>
-          handleUpdateAvatar(dataUser)
-        }
+        onUpdateAvatar={(dataUser) => handleUpdateAvatar(dataUser)}
         isLoading={isLoading}
       />
 
@@ -355,9 +366,7 @@ function App() {
       <AddPlacePopup
         isOpen={isAddPlacePopupOpen}
         onClose={closeAllPopups}
-        onAddPlace={(dataNewCard) =>
-          handleAddPlaceSubmit(dataNewCard)
-        }
+        onAddPlace={(dataNewCard) => handleAddPlaceSubmit(dataNewCard)}
         isLoading={isLoading}
       />
 

@@ -1,5 +1,4 @@
 const { default: mongoose } = require('mongoose');
-// const { CelebrateError } = require('celebrate');
 const { BadRequestError } = require('./BadRequestError');
 const { ConflictError } = require('./ConflictError');
 const { DefaltError } = require('./DefaltError');
@@ -16,15 +15,15 @@ const returnErrorToUser = (err, req, res, next) => {
 };
 
 function handleError(err, req, res, next) {
-  console.log('handleError => err', err.statusCode, err.name, err.message, err);
+  console.log('handleError => err', err.statusCode, err.name, err.message);
 
   if (err instanceof SomeError) {
     returnErrorToUser(err, req, res, next);
-    // } else if (err instanceof CelebrateError) {
-    //   // Ошибки перехваченные от celebrate
-    //   next(err);
   } else if (err instanceof mongoose.Error.ValidationError) {
-    returnErrorToUser(new BadRequestError(err), req, res, next);
+    const message = Object.values(err.errors)
+      .map((error) => error.message)
+      .join('; ');
+    returnErrorToUser(new BadRequestError(message), req, res, next);
   } else if (err instanceof mongoose.Error.CastError) {
     returnErrorToUser(new BadRequestError(err), req, res, next);
   } else {

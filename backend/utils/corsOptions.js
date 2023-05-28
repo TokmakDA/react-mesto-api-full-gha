@@ -16,7 +16,6 @@ const allowedCors = [
   'https://tokmakda.github.io',
   'http://tokmakda.github.io',
   'tokmakda.github.io',
-  'http://192.168.1.212:3001',
 ];
 // Значение для заголовка Access-Control-Allow-Methods по умолчанию (разрешены все типы запросов)
 const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';

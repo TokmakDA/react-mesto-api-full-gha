@@ -1,18 +1,4 @@
-import { useEffect } from 'react';
-
 const Popup = ({ isOpen, name, onClose, children }) => {
-  // указываем `useEffect` для обработчика `Escape`
-  useEffect(() => {
-    if (!isOpen) return;
-    function handleEscapeKey(e) {
-      if (e.code === 'Escape') {
-        onClose();
-      }
-    }
-    document.addEventListener('keydown', handleEscapeKey);
-    return () => document.removeEventListener('keydown', handleEscapeKey);
-  }, [isOpen, onClose]);
-
   // создаем обработчик оверлея
   const handleOverlay = (e) => {
     if (e.target === e.currentTarget) {

@@ -1,5 +1,5 @@
-const { CelebrateError } = require('celebrate');
-const { MongooseError, default: mongoose } = require('mongoose');
+const { default: mongoose } = require('mongoose');
+// const { CelebrateError } = require('celebrate');
 const { BadRequestError } = require('./BadRequestError');
 const { ConflictError } = require('./ConflictError');
 const { DefaltError } = require('./DefaltError');
@@ -16,30 +16,24 @@ const returnErrorToUser = (err, req, res, next) => {
 };
 
 function handleError(err, req, res, next) {
-  console.log('handleError => err', err.statusCode, err.name, err.message);
+  console.log('handleError => err', err.statusCode, err.name, err.message, err);
 
   if (err instanceof SomeError) {
     returnErrorToUser(err, req, res, next);
-  } else if (err.name === 'CastError') {
-    const newErr = new BadRequestError('Некорректный ID.');
-    returnErrorToUser(newErr, req, res, next);
-  } else if (err instanceof CelebrateError) {
-    // Ошибки перехваченные от celebrate
-    next(err);
+    // } else if (err instanceof CelebrateError) {
+    //   // Ошибки перехваченные от celebrate
+    //   next(err);
   } else if (err instanceof mongoose.Error.ValidationError) {
-    const newErr = new BadRequestError(err.message);
-    returnErrorToUser(newErr, req, res, next);
-  } else if (err instanceof MongooseError) {
-    // const message = Object.values(err.errors)
-    //   .map((error) => error.message)
-    //   .join('; ');
-    const newErr = new BadRequestError(err.message);
-    returnErrorToUser(newErr, req, res, next);
+    returnErrorToUser(new BadRequestError(err), req, res, next);
+  } else if (err instanceof mongoose.Error.CastError) {
+    returnErrorToUser(new BadRequestError(err), req, res, next);
   } else {
-    const newErr = new DefaltError(
-      'Что-то пошло не так. Внутренняя ошибка сервера.',
+    returnErrorToUser(
+      new DefaltError('Что-то пошло не так. Внутренняя ошибка сервера.'),
+      req,
+      res,
+      next,
     );
-    returnErrorToUser(newErr, req, res, next);
   }
 }
 

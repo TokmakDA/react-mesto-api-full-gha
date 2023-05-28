@@ -20,7 +20,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb').catch((err) => {
 
 app.use(cookieParser());
 app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(requestLogger); // подключаем логгер запросов
 //  Краш-тест сервера

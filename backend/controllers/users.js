@@ -1,28 +1,35 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
-const {
-  NotFoundError,
-  ConflictError,
-} = require('../errors/errors');
+const { NotFoundError, ConflictError } = require('../errors/errors');
 const { generateToken } = require('../utils/token');
+const { COOKIE_PARAMS } = require('../config/config');
 
 // Получить пользователя из базы по ID
-const getUserFindById = (id) => {
-  console.log('getUserFindById => id', id); //    ТЕСТ
-  return User.findById(id).orFail(() => {
+// Если имеем данные для изменения, то внести их
+const findUserById = async (id, data) => {
+  const user = await (data
+    ? User.findByIdAndUpdate(id, data, {
+      new: true,
+      runValidators: true,
+    })
+    : User.findById(id)
+  ).orFail(() => {
     throw new NotFoundError(`Пользователь ${id} не найден`);
   });
+  // выберем нужные поля для возврата пользователю
+  const dataUser = {
+    _id: user._id,
+    name: user.name,
+    about: user.about,
+    avatar: user.avatar,
+    email: user.email,
+  };
+  return dataUser;
 };
 
-// Внести изменения в данных пользователя из базы по ID
-const setFindByIdAndUpdate = (id, data) => {
-  console.log('setFindByIdAndUpdate = id, data', id, data); //    ТЕСТ
-  return User.findByIdAndUpdate(id, data, {
-    new: true,
-    runValidators: true,
-  }).orFail(() => {
-    throw new NotFoundError(`Пользователь ${id} не найден`);
-  });
+const getUserId = (req) => {
+  const { _id } = req.user;
+  return _id;
 };
 
 //  POST /signup — создаёт пользователя
@@ -82,8 +89,8 @@ const getUsers = (req, res, next) => {
 
 //  GET /users/:userId - возвращает пользователя по _id
 const getUser = (req, res, next) => {
-  const { userId } = req.params;
-  getUserFindById(userId)
+  console.log('getUser => req.params', req.params);
+  findUserById(req.params.userId)
     .then((user) => {
       res.json({ data: user });
     })
@@ -92,19 +99,9 @@ const getUser = (req, res, next) => {
 
 //  GET /users/me - возвращает информацию о текущем пользователе
 const getUserMe = (req, res, next) => {
-  const userId = req.user._id;
-  getUserFindById(userId)
+  findUserById(getUserId(req))
     .then((user) => {
-      // выбираем поля для передачи пользователю
-      res.json({
-        data: {
-          _id: user._id,
-          name: user.name,
-          about: user.about,
-          avatar: user.avatar,
-          email: user.email,
-        },
-      });
+      res.json({ data: user });
     })
     .catch(next);
 };
@@ -112,18 +109,9 @@ const getUserMe = (req, res, next) => {
 // PATCH /users/me — обновляет профиль
 const patchUser = (req, res, next) => {
   const { name, about } = req.body;
-  const userId = req.user._id;
-  setFindByIdAndUpdate(userId, { name, about })
+  findUserById(getUserId(req), { name, about })
     .then((user) => {
-      res.json({
-        data: {
-          _id: user._id,
-          name: user.name,
-          about: user.about,
-          avatar: user.avatar,
-          email: user.email,
-        },
-      });
+      res.json({ data: user });
     })
     .catch(next);
 };
@@ -131,18 +119,9 @@ const patchUser = (req, res, next) => {
 // PATCH /users/me/avatar — обновляет аватар
 const patchAvatar = (req, res, next) => {
   const { avatar } = req.body;
-  const userId = req.user._id;
-  setFindByIdAndUpdate(userId, { avatar })
+  findUserById(getUserId(req), { avatar })
     .then((user) => {
-      res.json({
-        data: {
-          _id: user._id,
-          name: user.name,
-          about: user.about,
-          avatar: user.avatar,
-          email: user.email,
-        },
-      });
+      res.json({ data: user });
     })
     .catch(next);
 };
@@ -156,12 +135,7 @@ const login = (req, res, next) => {
       const token = generateToken({ _id }); // сгенерировали токен
       // вернём токен пользователю
       res
-        .cookie('jwt', token, {
-          maxAge: 3600000 * 24 * 7,
-          httpOnly: true,
-          sameSite: 'None',
-          secure: true, // с этим параметром тесты валятся
-        })
+        .cookie('jwt', token, COOKIE_PARAMS)
         .status(200)
         .json({
           data: {
@@ -178,14 +152,7 @@ const login = (req, res, next) => {
 
 //  GET /signout — очищает куки
 const signout = (req, res) => {
-  res
-    .clearCookie('jwt', {
-      maxAge: 3600000 * 24 * 7,
-      httpOnly: true,
-      sameSite: 'None',
-      secure: true, // с этим параметром тесты валятся
-    })
-    .send({ message: 'Exit' });
+  res.clearCookie('jwt', COOKIE_PARAMS).send({ message: 'Exit' });
 };
 
 module.exports = {

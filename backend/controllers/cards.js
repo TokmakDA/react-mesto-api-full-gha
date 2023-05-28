@@ -1,6 +1,18 @@
 const Card = require('../models/card');
 const { ForbiddenError, NotFoundError } = require('../errors/errors');
 
+// Внести изменения в данных пользователя из базы по ID
+const setFindByIdAndUpdate = async (id, update) => {
+  const card = await Card.findByIdAndUpdate(id, update, {
+    new: true,
+  })
+    .populate(['owner', 'likes'])
+    .orFail(() => {
+      throw new NotFoundError(`Карточка ${id} не найдена`);
+    });
+  return card;
+};
+
 //  GET /cards — возвращает все карточки
 const getCards = (req, res, next) => {
   Card.find()
@@ -14,9 +26,8 @@ const getCards = (req, res, next) => {
 //  POST /cards — создаёт карточку
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
-  const userId = req.user._id;
 
-  Card.create({ name, link, owner: userId })
+  Card.create({ name, link, owner: req.user._id })
     .then((card) => Card.findById(card._id).populate(['owner', 'likes']))
     .then((card) => {
       res.status(201).json({ data: card });
@@ -47,18 +58,6 @@ const deleteCard = (req, res, next) => {
       );
     })
     .catch(next);
-};
-
-// Внести изменения в данных пользователя из базы по ID
-const setFindByIdAndUpdate = (id, update) => {
-  console.log('setFindByIdAndUpdate = id, data', id, update); //    ТЕСТ
-  return Card.findByIdAndUpdate(id, update, {
-    new: true,
-  })
-    .populate(['owner', 'likes'])
-    .orFail(() => {
-      throw new NotFoundError(`Карточка ${id} не найдена`);
-    });
 };
 
 //  PUT /cards/:cardId/likes — поставить лайк карточке

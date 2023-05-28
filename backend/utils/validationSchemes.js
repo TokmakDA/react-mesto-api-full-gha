@@ -7,9 +7,10 @@ const userConfig = {
     .required()
     .label('Имя')
     .messages({
-      'string.empty': 'Поле {#label} не может быть пустым',
-      'string.min': 'Поле {#label} должно быть не менее {#limit} символов',
-      'string.max': 'Поле {#label} должно быть не более {#limit} символов',
+      'string.min': 'Поле {#label} должно быть не менее {#limit} символов.',
+      'string.max': 'Поле {#label} должно быть не более {#limit} символов.',
+      'any.required': 'Поле {#label} обязательное.',
+      'string.empty': 'Поле {#label} не может быть пустым.',
     }),
   about: Joi.string()
     .min(2)
@@ -17,9 +18,10 @@ const userConfig = {
     .required()
     .label('О себе')
     .messages({
-      'string.empty': 'Поле {#label} не может быть пустым',
-      'string.min': 'Поле {#label} должно быть не менее {#limit} символов',
-      'string.max': 'Поле {#label} должно быть не более {#limit} символов',
+      'string.min': 'Поле {#label} должно быть не менее {#limit} символов.',
+      'string.max': 'Поле {#label} должно быть не более {#limit} символов.',
+      'any.required': 'Поле {#label} обязательное.',
+      'string.empty': 'Поле {#label} не может быть пустым/',
     }),
   avatar: Joi.string()
     .regex(/(https?:\/\/)\w+?(\S+|W+)?(\w+)?.\w{2,15}\/?/)
@@ -27,10 +29,11 @@ const userConfig = {
     .label('Аватар')
     .messages({
       'string.pattern.base':
-        'Поле {#label} должно быть ссылкой. Не соответствует требуемому образцу {#regex}',
+        'Поле {#label} должно быть ссылкой. Не соответствует образцу {#regex}',
       'string.base':
-        'Поле {#label} должно соответствовать предложенному образцу',
-      'string.empty': 'Поле {#label} не может быть пустым',
+        'Поле {#label} должно быть ссылкой. Не соответствует образцу {#regex}',
+      'any.required': 'Поле {#label} обязательное.',
+      'string.empty': 'Поле {#label} не может быть пустым.',
     }),
   email: Joi.string()
     .email()
@@ -38,18 +41,18 @@ const userConfig = {
     .label('Email')
     .messages({
       'string.email':
-        '{#label} должен быть действительным адресом электронной почты',
+        '{#label} должен быть действительным адресом электронной почты.',
+      'any.required': 'Поле {#label} обязательное.',
       'string.empty': 'Поле {#label} не может быть пустым',
-      'any.required': 'Поле {#label} обязательное',
     }),
   password: Joi.string()
     .min(8)
     .required()
     .label('Пароль')
     .messages({
-      'string.empty': 'Поле {#label} не может быть пустым',
-      'string.min': 'Ваш {#label} должн быть не менее {#limit} символов',
-      'any.required': 'Поле {#label} обязательное',
+      'string.min': 'Ваш {#label} должн быть не менее {#limit} символов.',
+      'any.required': 'Поле {#label} обязательное.',
+      'string.empty': 'Поле {#label} не может быть пустым.',
     }),
 };
 
@@ -73,6 +76,7 @@ const userSchemaUpdate = {
     about: userConfig.about,
   }),
 };
+
 const userSchemaUpdateAvatat = {
   body: Joi.object().keys({
     avatar: userConfig.avatar,
@@ -81,14 +85,36 @@ const userSchemaUpdateAvatat = {
 
 const userIdSchema = {
   params: Joi.object().keys({
-    userId: Joi.string().hex().length(24).required(),
+    userId: Joi.string()
+      .hex()
+      .length(24)
+      .required()
+      .label('userId')
+      .messages({
+        'string.hex': '{#label} должно быть в Hex-строкой.',
+        'string.length': '{#label} длина должна быть {#limit} символа.',
+        'any.required': 'Поле {#label} обязательное.',
+        'string.empty': 'Поле {#label} не может быть пустым.',
+      }),
   }),
 };
+
 const cardIdSchema = {
   params: Joi.object().keys({
-    cardId: Joi.string().hex().length(24).required(),
+    cardId: Joi.string()
+      .hex()
+      .length(24)
+      .required()
+      .label('cardId')
+      .messages({
+        'string.hex': '{#label} должно быть в Hex-строкой.',
+        'string.length': '{#label} длина должна быть {#limit} символа.',
+        'any.required': 'Поле {#label} обязательное.',
+        'string.empty': 'Поле {#label} не может быть пустым.',
+      }),
   }),
 };
+
 const cardSchema = {
   body: Joi.object().keys({
     name: Joi.string()
@@ -108,9 +134,9 @@ const cardSchema = {
       .label('Ссылка на картинку')
       .messages({
         'string.pattern.base':
-          'Поле {#label} должно быть ссылкой. Не соответствует требуемому образцу {#regex}',
+          'Поле {#label} должно быть ссылкой. Не соответствует образцу {#regex}',
         'string.base':
-          'Поле {#label} должно соответствовать предложенному образцу',
+          'Поле {#label} должно быть ссылкой. Не соответствует образцу {#regex}',
         'string.empty': 'Поле {#label} не может быть пустым',
       }),
   }),

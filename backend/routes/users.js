@@ -28,10 +28,6 @@ userRouter.get('/:userId/', celebrate(userIdSchema), getUser);
 userRouter.patch('/me', celebrate(userSchemaUpdate), patchUser);
 
 //  PATCH /users/me/avatar — обновляет аватар
-userRouter.patch(
-  '/me/avatar',
-  celebrate(userSchemaUpdateAvatat),
-  patchAvatar,
-);
+userRouter.patch('/me/avatar', celebrate(userSchemaUpdateAvatat), patchAvatar);
 
 module.exports = { userRouter };

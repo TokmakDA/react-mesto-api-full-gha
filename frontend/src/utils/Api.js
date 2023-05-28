@@ -28,11 +28,6 @@ class Api {
   };
 
   _makeRequest(url, method, body) {
-    // const token = localStorage.getItem('jwt');
-    // if (token !== undefined) {
-    //   this._headers['Authorization'] = `${token}`;
-    // }
-
     const config = {
       method,
       credentials: this._credentials,

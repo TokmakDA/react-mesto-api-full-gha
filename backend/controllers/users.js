@@ -5,7 +5,6 @@ const {
   ConflictError,
 } = require('../errors/errors');
 const { generateToken } = require('../utils/token');
-const { json } = require('body-parser');
 
 //  GET /users — возвращает всех пользователей
 const getUsers = (req, res, next) => {

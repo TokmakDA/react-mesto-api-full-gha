@@ -9,29 +9,43 @@ const SomeError = require('./SomeError');
 
 // Вернуть ошибку пользователю
 const returnErrorToUser = (err, req, res, next) => {
-  res.status(err.statusCode).send({ message: err.message }).end();
+  res
+    .status(err.statusCode)
+    .send({ message: err.message })
+    .end();
   next();
 };
 
 function handleError(err, req, res, next) {
-  console.log('handleError => err', err.statusCode, err.name, err.message);
+  console.log(
+    'handleError => err',
+    err.statusCode,
+    err.name,
+    err.message,
+  );
 
   if (err instanceof SomeError) {
     returnErrorToUser(err, req, res, next);
   } else if (err.name === 'CastError') {
     const newErr = new BadRequestError('Некорректный ID.');
     returnErrorToUser(newErr, req, res, next);
+  } else if (err instanceof CelebrateError) {
+    err.message = err.validation.body.message;
+    // Ошибки перехваченные от celebrate
+    next(err);
   } else if (err.name === 'ValidationError') {
     const message = Object.values(err.errors)
       .map((error) => error.message)
       .join('; ');
     const newErr = new BadRequestError(message);
     returnErrorToUser(newErr, req, res, next);
-  } else if (err.message === 'Validation failed') {
-    // Ошибки перехваченные от celebrate
-    next(err);
+    // } else if (err.message === 'Validation failed') {
+    //   // Ошибки перехваченные от celebrate
+    //   next(err);
   } else {
-    const newErr = new DefaltError('Что-то пошло не так. Внутренняя ошибка сервера.');
+    const newErr = new DefaltError(
+      'Что-то пошло не так. Внутренняя ошибка сервера.',
+    );
     returnErrorToUser(newErr, req, res, next);
   }
 }

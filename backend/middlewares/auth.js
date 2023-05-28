@@ -14,12 +14,12 @@ module.exports = (req, res, next) => {
     const payload = checkToken(jwtCokie);
     console.log('auth => jwtCokie;', payload);
     if (!payload) {
-      console.log('auth => !jwtToken and jwtCokie!;');
+      console.log('auth => !payload');
       next(newErr);
     }
     req.user = { _id: payload._id };
   } catch (err) {
-    console.log('auth => try cath;');
+    console.log('auth => try cath err;');
     next(newErr);
   }
   next(); // пропускаем запрос дальше

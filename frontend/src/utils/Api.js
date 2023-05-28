@@ -28,10 +28,10 @@ class Api {
   };
 
   _makeRequest(url, method, body) {
-    const token = localStorage.getItem('jwt');
-    if (token !== undefined) {
-      this._headers['Authorization'] = `${token}`;
-    }
+    // const token = localStorage.getItem('jwt');
+    // if (token !== undefined) {
+    //   this._headers['Authorization'] = `${token}`;
+    // }
 
     const config = {
       method,
@@ -128,8 +128,8 @@ class Api {
 }
 
 const config = {
-  baseUrl: 'https://api.tokmak-da.mesto.nomoredomains.rocks',
-  // baseUrl: 'http://localhost:3000',
+  // baseUrl: 'https://api.tokmak-da.mesto.nomoredomains.rocks',
+  baseUrl: 'http://localhost:3000',
   credentials: 'include',
   headers: {
     Accept: 'application/json',

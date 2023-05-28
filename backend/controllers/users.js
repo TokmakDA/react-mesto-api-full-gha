@@ -1,7 +1,11 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
-const { NotFoundError, ConflictError } = require('../errors/errors');
+const {
+  NotFoundError,
+  ConflictError,
+} = require('../errors/errors');
 const { generateToken } = require('../utils/token');
+const { json } = require('body-parser');
 
 //  GET /users — возвращает всех пользователей
 const getUsers = (req, res, next) => {
@@ -18,7 +22,9 @@ const getUser = (req, res, next) => {
 
   User.findById(userId)
     .orFail(() => {
-      throw new NotFoundError(`Пользователь ${userId} не найден`);
+      throw new NotFoundError(
+        `Пользователь ${userId} не найден`,
+      );
     })
     .then((user) => {
       res.json({ data: user });
@@ -32,7 +38,9 @@ const getUserMe = (req, res, next) => {
 
   User.findById(userId)
     .orFail(() => {
-      throw new NotFoundError(`Пользователь ${userId} не найден`);
+      throw new NotFoundError(
+        `Пользователь ${userId} не найден`,
+      );
     })
     .then((user) => {
       // выбираем поля для передачи пользователю
@@ -64,7 +72,16 @@ const login = (req, res, next) => {
           sameSite: 'None',
           secure: true,
         })
-        .status(200);
+        .status(200)
+        .json({
+          data: {
+            _id: user._id,
+            name: user.name,
+            about: user.about,
+            avatar: user.avatar,
+            email: user.email,
+          },
+        });
     })
     .catch(next);
 };
@@ -141,7 +158,9 @@ const patchUser = (req, res, next) => {
     },
   )
     .orFail(() => {
-      throw new NotFoundError(`Пользователь ${userId} не найден`);
+      throw new NotFoundError(
+        `Пользователь ${userId} не найден`,
+      );
     })
     .then((user) => {
       res.json({
@@ -171,7 +190,9 @@ const patchAvatar = (req, res, next) => {
     },
   )
     .orFail(() => {
-      throw new NotFoundError(`Пользователь ${userId} не найден`);
+      throw new NotFoundError(
+        `Пользователь ${userId} не найден`,
+      );
     })
     .then((user) => {
       res.json({

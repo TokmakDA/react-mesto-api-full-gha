@@ -54,7 +54,8 @@ const userConfig = {
 };
 
 const userSchemaCreate = {
-  body: Joi.object().keys(userConfig)};
+  body: Joi.object().keys(userConfig)
+};
 
 const userSchemaLogin = {
   body: Joi.object().keys({

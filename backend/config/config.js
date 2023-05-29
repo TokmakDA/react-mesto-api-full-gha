@@ -2,7 +2,7 @@ const COOKIE_PARAMS = {
   maxAge: 3600000 * 24 * 7,
   httpOnly: true,
   sameSite: 'None',
-  secure: true,
+  // secure: true,
 };
 
 module.exports = {

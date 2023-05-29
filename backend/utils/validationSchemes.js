@@ -4,7 +4,6 @@ const userConfig = {
   name: Joi.string()
     .min(2)
     .max(30)
-    .required()
     .label('Имя')
     .messages({
       'string.min': 'Поле {#label} должно быть не менее {#limit} символов.',
@@ -15,7 +14,6 @@ const userConfig = {
   about: Joi.string()
     .min(2)
     .max(30)
-    .required()
     .label('О себе')
     .messages({
       'string.min': 'Поле {#label} должно быть не менее {#limit} символов.',
@@ -25,7 +23,6 @@ const userConfig = {
     }),
   avatar: Joi.string()
     .regex(/(https?:\/\/)\w+?(\S+|W+)?(\w+)?.\w{2,15}\/?/)
-    .required()
     .label('Аватар')
     .messages({
       'string.pattern.base':
@@ -57,11 +54,7 @@ const userConfig = {
 };
 
 const userSchemaCreate = {
-  body: Joi.object().keys({
-    email: userConfig.email,
-    password: userConfig.password,
-  }),
-};
+  body: Joi.object().keys(userConfig)};
 
 const userSchemaLogin = {
   body: Joi.object().keys({
@@ -72,14 +65,14 @@ const userSchemaLogin = {
 
 const userSchemaUpdate = {
   body: Joi.object().keys({
-    name: userConfig.name,
-    about: userConfig.about,
+    name: userConfig.name.required(),
+    about: userConfig.about.required(),
   }),
 };
 
 const userSchemaUpdateAvatat = {
   body: Joi.object().keys({
-    avatar: userConfig.avatar,
+    avatar: userConfig.avatar.required(),
   }),
 };
 

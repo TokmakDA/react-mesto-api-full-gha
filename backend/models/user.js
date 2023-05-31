@@ -9,8 +9,9 @@ const userSchema = new Schema({
   name: {
     type: String,
     required: false,
-    minlength: 2,
-    maxlength: 30,
+    lebel: 'name',
+    minlength: [2, `Поле {Object} должно быть не иенее {VALUE} символов.`],
+    maxlength: [30, 'Поле {#label} должно быть не более {#limit} символов.'],
     default: 'Жак-Ив Кусто',
   },
   about: {
@@ -48,7 +49,7 @@ const userSchema = new Schema({
     required: true,
     select: false,
   },
-});
+}, {versionKey: false});
 
 userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email })

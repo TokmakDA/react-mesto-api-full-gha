@@ -18,10 +18,10 @@ mongoose.connect('mongodb://localhost:27017/mestodb').catch((err) => {
   console.log(err);
 });
 
+app.use(requestLogger); // подключаем логгер запросов
 app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(requestLogger); // подключаем логгер запросов
 //  Краш-тест сервера
 app.get('/crash-test', () => {
   setTimeout(() => {

@@ -6,23 +6,10 @@ const FormTemplate = ({ isLoggedIn, onSubmit, form, children, isLoading }) => {
   const [currentButton, setButton] = useState(form.button);
   useEffect(
     () => (isLoading ? setButton(form.loadingButton) : setButton(form.button)),
-    [isLoading, form]
+    [isLoading, form],
   );
 
   const { values, handleChange } = useForm();
-
-  // const [userData, setUserData] = useState({
-  //   email: '',
-  //   password: '',
-  // });
-
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setUserData({
-  //     ...userData,
-  //     [name]: value,
-  //   });
-  // };
 
   if (isLoggedIn) {
     return <Navigate to="/" />;
@@ -34,7 +21,11 @@ const FormTemplate = ({ isLoggedIn, onSubmit, form, children, isLoading }) => {
   };
 
   return (
-    <form className="form" name={`${form.name}-form`} onSubmit={handleSubmit}>
+    <form
+      className="form"
+      name={`${form.name}-form`}
+      onSubmit={handleSubmit}
+    >
       <h2 className="form__title form__title_margin-bottom_m">{form.title}</h2>
       <fieldset className="form__inputs">
         <input
@@ -49,7 +40,10 @@ const FormTemplate = ({ isLoggedIn, onSubmit, form, children, isLoading }) => {
           required
           maxLength="100"
         />
-        <span id="email-error" className="form__error"></span>
+        <span
+          id="email-error"
+          className="form__error"
+        ></span>
         <input
           autoComplete="current-password"
           type="password"
@@ -62,9 +56,15 @@ const FormTemplate = ({ isLoggedIn, onSubmit, form, children, isLoading }) => {
           maxLength="100"
           required
         />
-        <span id="password-error" className="form__error"></span>
+        <span
+          id="password-error"
+          className="form__error"
+        ></span>
       </fieldset>
-      <button type="submit" className="form__button">
+      <button
+        type="submit"
+        className="form__button"
+      >
         {currentButton}
       </button>
       {children}

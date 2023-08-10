@@ -10,10 +10,23 @@
 
 Адрес репозитория: https://github.com/TokmakDA/react-mesto-api-full-gha
 
+### Основной функционал
+
+- Добавление пользователя.
+- Редактирование данных (Имя и о себе, аватар).
+- Добавление и удаление карточек (добавляется ссылка на картинку).
+- Лайки
+- Защита авторизацией.
+- Защита от удаления чужих карточек.
+- Хранение данных в БД MongooseBD 6.0
+
 ## Ссылки на проект
+- IP: 81.200.146.157
+- [Frontend](https://mesto.e-tokmak.ru)
+- [Backend](https://api.mesto.e-tokmak.ru)
 
-IP 84.252.142.173
+### Автор проекта
 
-Frontend https://tokmak-da.mesto.nomoredomains.monster
+**_Токмак Дмитрий Андреевич_**
 
-Backend https://api.tokmak-da.mesto.nomoredomains.rocks
+**_студент Яндекс Практикума 59 кагорты_**

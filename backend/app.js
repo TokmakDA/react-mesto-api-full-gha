@@ -12,7 +12,7 @@ const { handleError } = require('./errors/errors');
 const corsOptions = require('./utils/corsOptions');
 
 const app = express();
-const { PORT = 3000 } = process.env;
+const { PORT = 3005 } = process.env;
 
 mongoose.connect('mongodb://localhost:27017/mestodb').catch((err) => {
   console.log(err);

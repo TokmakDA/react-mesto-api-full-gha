@@ -1,9 +1,4 @@
 const allowedCors = [
-  'https://praktikum.tk',
-  'http://praktikum.tk',
-  'localhost:3000',
-  'http://localhost:3000',
-
   'http://api.mesto.e-tokmak.ru',
   'https://api.mesto.e-tokmak.ru',
   'http://mesto.e-tokmak.ru',

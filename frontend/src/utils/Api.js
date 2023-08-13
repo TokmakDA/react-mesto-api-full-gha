@@ -128,7 +128,6 @@ class Api {
 
 const config = {
   baseUrl: 'https://api.mesto.e-tokmak.ru',
-  // baseUrl: 'http://localhost:3000',
   credentials: 'include',
   headers: {
     'Content-Type': 'application/json',

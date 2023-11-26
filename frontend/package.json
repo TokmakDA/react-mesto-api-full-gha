@@ -1,5 +1,4 @@
 {
-  "homepage": "https://tokmak-da.mesto.nomoredomains.monster/",
   "name": "react-mesto-api-full-gha",
   "version": "0.1.0",
   "private": true,
@@ -39,8 +38,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "gh-pages": "^5.0.0"
   }
 }
